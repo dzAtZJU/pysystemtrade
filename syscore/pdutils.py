@@ -234,6 +234,7 @@ def pd_readcsv(
     input_column_mapping=None,
     skiprows=0,
     skipfooter=0,
+    encoding=None
 ):
     """
     Reads a pandas data frame, with time index labelled
@@ -257,7 +258,7 @@ def pd_readcsv(
 
     """
 
-    ans = pd.read_csv(filename, skiprows=skiprows, skipfooter=skipfooter)
+    ans = pd.read_csv(filename, skiprows=skiprows, skipfooter=skipfooter, encoding=encoding)
     ans.index = pd.to_datetime(ans[date_index_name], format=date_format).values
 
     del ans[date_index_name]

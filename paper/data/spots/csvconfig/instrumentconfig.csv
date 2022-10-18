@@ -1,0 +1,4 @@
+Instrument,Pointsize,Percentage,PerBlock,PerTrade,AssetClass,Currency,Description,Slippage
+BITFINEX-BTCUST,1,0.0009,0,0,Equity,UST,Netherlands equity index AEX,0
+BITFINEX-ETHUST,1,0.0009,0,0,Equity,UST,Netherlands equity index AEX,0
+BITFINEX-SOLUST,1,0.0009,0,0,Equity,UST,Netherlands equity index AEX,0
