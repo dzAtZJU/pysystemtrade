@@ -38,7 +38,7 @@ class ctsePositionSizing(PositionSizing):
         return self.config.position_sizing_method
 
     def daily_risk_target_capital_pct(self, instrument_code):
-        vol_scalar = super().get_volatility_scalar( instrument_code)
+        vol_scalar = super().get_volatilityw_scalar( instrument_code)
         tmp = self.get_block_value(instrument_code) * 100 * vol_scalar / self.get_notional_trading_capital()
         return tmp
 
