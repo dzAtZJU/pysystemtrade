@@ -17,7 +17,7 @@ from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 
 from sysproduction.data.prices import diagPrices, updatePrices
-from paper.sysproduction.data.broker import dataBroker
+from paper.sysproduction.data.exchange import dataBroker
 from sysdata.tools.cleaner import priceFilterConfig, get_config_for_price_filtering
 from sysproduction.data.contracts import dataContracts
 

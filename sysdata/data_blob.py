@@ -102,6 +102,7 @@ class dataBlob(object):
             csv=self._add_csv_class,
             arctic=self._add_arctic_class,
             mongo=self._add_mongo_class,
+            okx=self._add_exchange_class
         )
 
         method_to_add_with = class_dict.get(prefix, None)
@@ -119,6 +120,21 @@ class dataBlob(object):
         prefix = split_up_name[0]
 
         return prefix
+
+    def _add_exchange_class(self, class_object):
+        log = self._get_specific_logger(class_object)
+        try:
+            resolved_instance = class_object()
+        except Exception as e:
+            class_name = get_class_name(class_object)
+            msg = (
+                "Error %s couldn't evaluate %s(self.ib_conn, log = self.log.setup(component = %s)) This might be because (a) IB gateway not running, or (b) import is missing\
+                         or (c) arguments don't follow pattern"
+                % (str(e), class_name, class_name)
+            )
+            self._raise_and_log_error(msg)
+
+        return resolved_instance
 
     def _add_ib_class(self, class_object):
         log = self._get_specific_logger(class_object)
@@ -345,7 +361,7 @@ class dataBlob(object):
         return log_name
 
 
-source_dict = dict(arctic="db", mongo="db", csv="db", ib="broker")
+source_dict = dict(arctic="db", mongo="db", csv="db", ib="broker", okx='exchange')
 
 
 def identifying_name(split_up_name: list, keep_original_prefix=False) -> str:

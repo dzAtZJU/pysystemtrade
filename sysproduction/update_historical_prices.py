@@ -3,6 +3,7 @@ Update historical data per contract from interactive brokers data, dump into mon
 """
 
 from copy import copy
+from paper.sysobjects.spot_prices import spotPrices
 from syscore.objects import success, failure, arg_not_supplied, missing_data
 from syscore.merge_data import spike_in_data
 from syscore.dateutils import DAILY_PRICE_FREQ, Frequency
@@ -16,7 +17,7 @@ from syslogdiag.email_via_db_interface import send_production_mail_msg
 from sysobjects.contracts import futuresContract
 from sysobjects.futures_per_contract_prices import futuresContractPrices
 
-from sysproduction.data.prices import diagPrices, updatePrices
+from paper.sysproduction.data.prices import diagPrices, updatePrices
 from sysproduction.data.broker import dataBroker
 from sysdata.tools.cleaner import priceFilterConfig, get_config_for_price_filtering
 from sysproduction.data.contracts import dataContracts
@@ -67,26 +68,14 @@ def update_historical_prices_for_instrument(instrument_code: str,
     :param data: dataBlob
     :return: None
     """
-    diag_contracts = dataContracts(data)
-    all_contracts_list = diag_contracts.get_all_contract_objects_for_instrument_code(
-        instrument_code
-    )
-    contract_list = all_contracts_list.currently_sampling()
-
-    if len(contract_list) == 0:
-        data.log.warn("No contracts marked for sampling for %s" % instrument_code)
-        return failure
-
-    for contract_object in contract_list:
-        data.update_log(contract_object.specific_log(data.log))
-        update_historical_prices_for_instrument_and_contract(contract_object, data, cleaning_config = cleaning_config,
+    update_historical_prices_for_instrument_and_contract(instrument_code, data, cleaning_config = cleaning_config,
                                                              interactive_mode=interactive_mode)
 
     return success
 
 
 def update_historical_prices_for_instrument_and_contract(
-    contract_object: futuresContract, data: dataBlob,
+        instrument_code: str, data: dataBlob,
         cleaning_config: priceFilterConfig = arg_not_supplied,
         interactive_mode: bool = False
 ):
@@ -97,11 +86,10 @@ def update_historical_prices_for_instrument_and_contract(
 
     list_of_frequencies = [intraday_frequency, daily_frequency]
 
-    for frequency in list_of_frequencies:
-        get_and_add_prices_for_frequency(
+    get_and_add_prices_for_frequency(
             data,
-            contract_object,
-            frequency=frequency,
+            instrument_code,
+            frequency=DAILY_PRICE_FREQ,
             cleaning_config=cleaning_config,
             interactive_mode = interactive_mode
         )
@@ -115,45 +103,29 @@ def update_historical_prices_for_instrument_and_contract(
 
 def get_and_add_prices_for_frequency(
     data: dataBlob,
-    contract_object: futuresContract,
+    instrument_code: str,
     frequency: Frequency,
     cleaning_config: priceFilterConfig,
     interactive_mode: bool = False
 ):
     broker_data_source = dataBroker(data)
 
-    broker_prices = broker_data_source.get_cleaned_prices_at_frequency_for_contract_object(
-        contract_object, frequency, cleaning_config = cleaning_config
+    broker_prices = broker_data_source.get_prices_at_frequency_for_instrument_code(
+        instrument_code, frequency
     )
 
     if broker_prices is missing_data:
-        print("Something went wrong with getting prices for %s to check" % str(contract_object))
+        print("Something went wrong with getting prices for %s to check" % str(instrument_code))
         return failure
 
     if len(broker_prices) == 0:
-        print("No broker prices found for %s nothing to check" % str(contract_object))
+        print("No broker prices found for %s nothing to check" % str(instrument_code))
         return success
 
 
-    if interactive_mode:
-        print("\n\n Manually checking prices for %s \n\n" % str(contract_object))
-        max_price_spike = cleaning_config.max_price_spike
-
-        price_data = diagPrices(data)
-        old_prices = price_data.get_prices_at_frequency_for_contract_object(contract_object,
-                                                                            frequency=frequency)
-        new_prices_checked = manual_price_checker(
-            old_prices,
-            broker_prices,
-            column_to_check="FINAL",
-            delta_columns=["OPEN", "HIGH", "LOW"],
-            type_new_data=futuresContractPrices,
-            max_price_spike=max_price_spike
-        )
-        check_for_spike = False
-    else:
-        new_prices_checked = copy(broker_prices)
-        check_for_spike = True
+    
+    new_prices_checked = copy(broker_prices)
+    check_for_spike = True
 
     error_or_rows_added = price_updating_or_errors(data = data,
                                                    frequency=frequency,
@@ -173,8 +145,8 @@ def get_and_add_prices_for_frequency(
 
 def price_updating_or_errors(data: dataBlob,
                              frequency: Frequency,
-                             contract_object: futuresContract,
-                             new_prices_checked: futuresContractPrices,
+                             instrument_code: str,
+                             new_prices_checked: spotPrices,
                              cleaning_config: priceFilterConfig,
                              check_for_spike: bool = True
                             ):
@@ -182,7 +154,7 @@ def price_updating_or_errors(data: dataBlob,
     price_updater = updatePrices(data)
 
     error_or_rows_added = price_updater.update_prices_at_frequency_for_contract(
-        contract_object=contract_object,
+        instrument_code=instrument_code,
         new_prices=new_prices_checked,
         frequency=frequency,
         check_for_spike=check_for_spike,

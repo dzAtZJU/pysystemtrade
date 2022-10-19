@@ -28,7 +28,7 @@ class ctseStrategyBacktest(pd.DataFrame):
 
         data.index.name = "index"  # arctic compatible
 
-    def forecast(self):
+    def get_raw_forecast(self):
         return self[self.OPERATE_FLAG].isin(self.FORECAST_HOLD) * 1
 
     def get_trades(self):

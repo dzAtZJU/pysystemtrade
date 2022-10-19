@@ -10,6 +10,7 @@ Two types of services:
 
 """
 
+from paper.sysobjects.spot_prices import spotPrices
 from syscore.objects import success
 
 from sysobjects.dict_of_named_futures_per_contract_prices import (
@@ -22,7 +23,7 @@ from sysobjects.multiple_prices import futuresMultiplePrices, setOfNamedContract
 from sysobjects.contracts import futuresContract
 
 from sysdata.data_blob import dataBlob
-from sysproduction.data.prices import (
+from paper.sysproduction.data.prices import (
     diagPrices,
     updatePrices,
     get_valid_instrument_code_from_user,
@@ -111,48 +112,28 @@ def update_multiple_adjusted_prices_for_instrument(
     """
 
     data.log.label(instrument_code=instrument_code)
+    from paper.sysproduction.data.exchange import dataExchange
+    new_prices = dataExchange(data).get_prices_at_frequency_for_instrument_code(instrument_code, 'DAY')
     updated_adjusted_prices = calc_update_adjusted_prices(
-        data, instrument_code
+        data, instrument_code, new_prices
     )
 
     update_with_new_prices(
         data,
         instrument_code,
-        updated_adjusted_prices=updated_adjusted_prices,
-        updated_multiple_prices=updated_multiple_prices,
+        updated_adjusted_prices=updated_adjusted_prices
     )
-
-
-def calc_updated_multiple_prices(
-    data: dataBlob, instrument_code: str
-) -> futuresMultiplePrices:
-    diag_prices = diagPrices(data)
-    # update multiple prices with new prices
-    # (method in multiple prices object and possible in data socket)
-    existing_multiple_prices = diag_prices.get_multiple_prices(instrument_code)
-
-    relevant_contracts = existing_multiple_prices.current_contract_dict()
-
-    new_prices_dict = get_dict_of_new_prices_and_contractid(
-        instrument_code, relevant_contracts, data
-    )
-    updated_multiple_prices = existing_multiple_prices.update_multiple_prices_with_dict(
-        new_prices_dict
-    )
-
-    return updated_multiple_prices
-
 
 def calc_update_adjusted_prices(
-    data: dataBlob, instrument_code: str, updated_multiple_prices: futuresMultiplePrices
-) -> futuresAdjustedPrices:
+    data: dataBlob, instrument_code: str, new_spot_prices: spotPrices
+) -> spotPrices:
 
     diag_prices = diagPrices(data)
-    existing_adjusted_prices = diag_prices.get_adjusted_prices(instrument_code)
+    existing_adjusted_prices = diag_prices.get_spot_prices(instrument_code)
 
     updated_adjusted_prices = (
-        existing_adjusted_prices.update_with_multiple_prices_no_roll(
-            updated_multiple_prices
+        existing_adjusted_prices.update_with_new_prices(
+            new_spot_prices
         )
     )
 
@@ -202,16 +183,12 @@ def get_dict_of_new_prices_and_contractid(
 def update_with_new_prices(
     data,
     instrument_code: str,
-    updated_multiple_prices: futuresMultiplePrices,
-    updated_adjusted_prices: futuresAdjustedPrices,
+    updated_adjusted_prices: spotPrices,
 ):
 
     update_prices = updatePrices(data)
 
-    update_prices.add_multiple_prices(
-        instrument_code, updated_multiple_prices, ignore_duplication=True
-    )
-    update_prices.add_adjusted_prices(
+    update_prices.add_spot_prices(
         instrument_code, updated_adjusted_prices, ignore_duplication=True
     )
 

@@ -76,83 +76,18 @@ class okxSpotPriceData(brokerFuturesContractPriceData):
     """
 
     def __init__(
-        self, ibconnection: connectionIB, log=logtoscreen("ibFuturesContractPriceData")
+        self,  log=logtoscreen("okxSpotPriceData")
     ):
-        self._ibconnection = ibconnection
         super().__init__(log=log)
 
     def __repr__(self):
         return "IB Futures per contract price data %s" % str(self.ib_client)
-
-    @property
-    def ibconnection(self) -> connectionIB:
-        return self._ibconnection
-
-    @property
-    def ib_client(self) -> ibPriceClient:
-        client = getattr(self, "_ib_client", None)
-        if client is None:
-            client = self._ib_client = ibPriceClient(
-                ibconnection=self.ibconnection, log=self.log
-            )
-
-        return client
-
-    @property
-    def futures_contract_data(self) -> ibFuturesContractData:
-        return ibFuturesContractData(self.ibconnection, log=self.log)
-
-    @property
-    def futures_instrument_data(self) -> ibFuturesInstrumentData:
-        return ibFuturesInstrumentData(self.ibconnection, log=self.log)
-
-    def has_merged_price_data_for_contract(self, futures_contract: futuresContract) -> bool:
-        """
-        Does IB have data for a given contract?
-
-        Overriden because we will have a problem matching expiry dates to nominal yyyymm dates
-        :param contract_object:
-        :return: bool
-        """
-        futures_contract_with_IB_data = (
-            self.futures_contract_data.get_contract_object_with_IB_data(
-                futures_contract
-            )
-        )
-        if futures_contract_with_IB_data is missing_contract:
-            return False
-        else:
-            return True
 
     def get_list_of_instrument_codes_with_merged_price_data(self) -> list:
         # return list of instruments for which pricing is configured
         list_of_instruments = self.futures_instrument_data.get_list_of_instruments()
 
         return list_of_instruments
-
-    def contracts_with_merged_price_data_for_instrument_code(
-        self, instrument_code: str, allow_expired=True
-    ) -> listOfFuturesContracts:
-
-        futures_instrument_with_ib_data = (
-            self.futures_instrument_data.get_futures_instrument_object_with_IB_data(
-                instrument_code
-            )
-        )
-        list_of_date_str = self.ib_client.broker_get_futures_contract_list(
-            futures_instrument_with_ib_data, allow_expired=allow_expired
-        )
-
-        list_of_contracts = [
-            futuresContract(instrument_code, date_str) for date_str in list_of_date_str
-        ]
-
-        list_of_contracts = listOfFuturesContracts(list_of_contracts)
-
-        return list_of_contracts
-
-    def get_contracts_with_merged_price_data(self):
-        raise NotImplementedError("Do not use get_contracts_with_price_data with IB")
 
     def get_prices_at_frequency_for_potentially_expired_contract_object(
         self, contract: futuresContract, freq: Frequency = DAILY_PRICE_FREQ
@@ -169,12 +104,12 @@ class okxSpotPriceData(brokerFuturesContractPriceData):
         raise Exception("Have to get prices from IB with specific frequency")
 
 
-    def get_prices_at_frequency_for_contract_object(self, instrument_code:str, frequency: Frequency,
+    def get_prices_at_frequency_for_instrument_code(self, instrument_code:str, frequency: Frequency,
                                                     return_empty: bool = True):
         
         okx = ccxt.okex5({'apiKey': 'f0029f0c-d729-43aa-a277-2db435b93c11', 'secret': 'FEDE42B730B675787361DCD1371BEC46'})
         close = okx.fetch_ticker(instrument_code)['close']
-        return spotPrices(pd.DataFrame({'FINAL': [close]}))
+        return spotPrices( pd.Series([close]))
 
     def _get_prices_at_frequency_for_contract_object_no_checking(self,
             futures_contract_object: futuresContract, frequency: Frequency) -> futuresContractPrices:

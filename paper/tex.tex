@@ -1,3 +1,26 @@
-\begin{document}
+\documentclass{article}
+\usepackage{amsthm}
+
 \newtheorem{definition}{Definition}[section]
+\newtheorem{axiom}{Axiom}[section]
+
+\begin{document}
+
+\section{Forecast}
+\begin{definition}[market strength forecast]
+    \label{msf}
+\end{definition}
+\begin{definition}[market risk forecast]
+    \label{mrf}
+\end{definition}
+\begin{definition}[capital\% put into a trade]
+    \label{cpit}
+\end{definition}
+\begin{axiom}
+    Definition~\ref{cpit} shoud be larger if Definition~\ref{msf} is stronger
+\end{axiom}
+\begin{axiom}
+    Definition~\ref{cpit} shoud be smaller if Definition~\ref{mrf} is larger
+\end{axiom}
+
 \end{document}

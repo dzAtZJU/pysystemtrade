@@ -1,6 +1,8 @@
 import datetime
 
 import numpy as np
+from paper.sysdata.spot_prices import spotPricesData
+from paper.sysobjects.spot_prices import spotPrices
 
 from syscore.objects import missing_contract, arg_not_supplied, missing_data
 from syscore.dateutils import Frequency, from_config_frequency_to_frequency, n_days_ago
@@ -28,6 +30,8 @@ from sysdata.arctic.arctic_spreads import (
     arcticSpreadsForInstrumentData,
     spreadsForInstrumentData,
 )
+from paper.sysdata.arctic.arctic_spot_prices import arcticSpotPricesData
+
 from sysdata.mongodb.mongo_futures_contracts import mongoFuturesContractData
 
 from sysdata.futures.multiple_prices import futuresMultiplePricesData
@@ -51,43 +55,28 @@ class diagPrices(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
-                arcticFuturesAdjustedPricesData
+                arcticSpotPricesData
             ]
         )
         return data
 
-    def get_intraday_frequency_for_historical_download(self) -> Frequency:
-        config = self.data.config
-        intraday_frequency_as_str = config.get_element_or_missing_data(
-            "intraday_frequency"
-        )
-        intraday_frequency = from_config_frequency_to_frequency(
-            intraday_frequency_as_str
-        )
-
-        if intraday_frequency is missing_data:
-            error_msg = (
-                "Intraday frequency of %s is not recognised as a valid frequency"
-                % str(intraday_frequency)
-            )
-            self.log.critical(error_msg)
-            raise Exception(error_msg)
-
-        return intraday_frequency
-
-    def get_adjusted_prices(self, instrument_code: str) -> futuresAdjustedPrices:
-        adjusted_prices = self.db_futures_adjusted_prices_data.get_adjusted_prices(
+    def get_spot_prices(self, instrument_code: str) -> spotPrices:
+        adjusted_prices = self.db_spot_prices.get_spot_prices(
             instrument_code
         )
 
         return adjusted_prices
 
     def get_list_of_instruments_in_multiple_prices(self) -> list:
-        list_of_instruments = (
-            self.db_futures_multiple_prices_data.get_list_of_instruments()
-        )
+        from sysdata.csv.csv_instrument_data import csvFuturesInstrumentData
 
-        return list_of_instruments
+        data_in = csvFuturesInstrumentData('paper.data.spots.csvconfig')
+        return data_in.get_list_of_instruments()
+        # list_of_instruments = (
+        #     self.db_spot_prices_data.get_list_of_instruments()
+        # )
+
+        # return list_of_instruments
 
     def get_multiple_prices(self, instrument_code: str) -> futuresMultiplePrices:
         multiple_prices = self.db_futures_multiple_prices_data.get_multiple_prices(
@@ -194,8 +183,8 @@ class diagPrices(productionDataLayerGeneric):
         return self.db_spreads_for_instrument_data.get_list_of_instruments()
 
     @property
-    def db_futures_adjusted_prices_data(self) -> futuresAdjustedPricesData:
-        return self.data.db_futures_adjusted_prices
+    def db_spot_prices(self) -> spotPricesData:
+        return self.data.db_spot_prices
 
     @property
     def db_futures_multiple_prices_data(self) -> futuresMultiplePricesData:
@@ -214,66 +203,23 @@ class updatePrices(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
         data.add_class_list(
             [
-                arcticFuturesContractPriceData,
-                arcticFuturesMultiplePricesData,
-                mongoFuturesContractData,
-                arcticFuturesAdjustedPricesData,
-                arcticSpreadsForInstrumentData,
+                arcticSpotPricesData
             ]
         )
 
         return data
 
-    def overwrite_merged_prices_for_contract(
-        self,
-        contract_object: futuresContract,
-        new_prices: futuresContractPrices,
-    ):
-
-        self.db_futures_contract_price_data.write_merged_prices_for_contract_object(contract_object,
-                                                                                    futures_price_data=new_prices,
-                                                                                    ignore_duplication=True)
-
-
-    def update_prices_at_frequency_for_contract(
-        self,
-        contract_object: futuresContract,
-        frequency: Frequency,
-        new_prices: futuresContractPrices,
-        check_for_spike: bool = True,
-        max_price_spike: float = VERY_BIG_NUMBER
-    ) -> int:
-
-        error_or_rows_added = (
-            self.db_futures_contract_price_data.update_prices_at_frequency_for_contract(
-                contract_object=contract_object,
-                new_futures_per_contract_prices =new_prices,
-                frequency=frequency,
-                check_for_spike=check_for_spike,
-                max_price_spike = max_price_spike
-            )
-        )
-        return error_or_rows_added
-
-    def add_multiple_prices(
+    @property
+    def db_spot_prices(self) -> spotPricesData:
+        return self.data.db_spot_prices
+        
+    def add_spot_prices(
         self,
         instrument_code: str,
-        updated_multiple_prices: futuresMultiplePrices,
+        updated_adjusted_prices: spotPrices,
         ignore_duplication=True,
     ):
-        self.db_futures_multiple_prices_data.add_multiple_prices(
-            instrument_code,
-            updated_multiple_prices,
-            ignore_duplication=ignore_duplication,
-        )
-
-    def add_adjusted_prices(
-        self,
-        instrument_code: str,
-        updated_adjusted_prices: futuresAdjustedPrices,
-        ignore_duplication=True,
-    ):
-        self.db_futures_adjusted_prices_data.add_adjusted_prices(
+        self.db_spot_prices.add_spot_prices(
             instrument_code,
             updated_adjusted_prices,
             ignore_duplication=ignore_duplication,

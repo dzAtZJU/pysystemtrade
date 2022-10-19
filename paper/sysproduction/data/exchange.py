@@ -43,7 +43,7 @@ from sysproduction.data.control_process import diagControlProcess
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
 
 
-class dataBroker(productionDataLayerGeneric):
+class dataExchange(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:
 
         # Add a list of broker specific classes that will be aliased as self.data.broker_fx_prices,
@@ -54,14 +54,14 @@ class dataBroker(productionDataLayerGeneric):
         return data
 
     @property
-    def okx_spot_price_data(self) -> brokerFuturesContractPriceData:
-        return self.data.okx_spot_price_data
+    def exchange_spot_price(self) -> brokerFuturesContractPriceData:
+        return self.data.exchange_spot_price
 
-    def get_prices_at_frequency_for_contract_object(
+    def get_prices_at_frequency_for_instrument_code(
         self, instrument_code:str, frequency: Frequency
     ) -> spotPrices:
 
-        return self.okx_spot_price_data.get_prices_at_frequency_for_contract_object(instrument_code,
+        return self.exchange_spot_price.get_prices_at_frequency_for_instrument_code(instrument_code,
                                                                                                    frequency,
                                                                                                    return_empty=False)
 
