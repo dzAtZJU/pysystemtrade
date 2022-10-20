@@ -1,4 +1,3 @@
-Instrument,Pointsize,Percentage,PerBlock,PerTrade,AssetClass,Currency,Description,Slippage
-BTC-USDT,1,0.0009,0,0,Equity,UST,Netherlands equity index AEX,0
-ETH-USDT,1,0.0009,0,0,Equity,UST,Netherlands equity index AEX,0
-SOL-USDT,1,0.0009,0,0,Equity,UST,Netherlands equity index AEX,0
+version https://git-lfs.github.com/spec/v1
+oid sha256:8e38102e279eae58d2e2fec762c90a93e6da70b6dbd14bc710a49bbbe57dcc51
+size 283
