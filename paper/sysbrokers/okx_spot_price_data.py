@@ -108,8 +108,10 @@ class okxSpotPriceData(brokerFuturesContractPriceData):
                                                     return_empty: bool = True):
         
         okx = ccxt.okex5({'apiKey': 'f0029f0c-d729-43aa-a277-2db435b93c11', 'secret': 'FEDE42B730B675787361DCD1371BEC46'})
-        close = okx.fetch_ticker(instrument_code)['close']
-        return spotPrices( pd.Series([close]))
+        candles = okx.fetch_ohlcv('BTC/USDT', timeframe='1m', limit=1)
+        df = pd.DataFrame(candles)
+        df.index = pd.to_datetime(df.iloc[:, 0], unit='ms', utc=True).dt.tz_convert('Asia/Hong_Kong').dt.tz_localize(None)
+        return spotPrices( df.iloc[:, -2])
 
     def _get_prices_at_frequency_for_contract_object_no_checking(self,
             futures_contract_object: futuresContract, frequency: Frequency) -> futuresContractPrices:

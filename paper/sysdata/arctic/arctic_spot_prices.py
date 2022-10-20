@@ -6,7 +6,7 @@ from sysdata.arctic.arctic_connection import arcticData
 from syslogdiag.log_to_screen import logtoscreen
 import pandas as pd
 
-ADJPRICE_COLLECTION = "spot_prices"
+ADJPRICE_COLLECTION = "spot_prices_v3"
 
 
 class arcticSpotPricesData(spotPricesData):

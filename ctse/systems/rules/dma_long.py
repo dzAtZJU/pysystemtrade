@@ -6,7 +6,7 @@ def dma_long_1_D(price, instrument):
     only forecast 0, 1
     '''
 
-    forecast = csvCTSEStrategyBacktestData().read(instrument, 'DMA_LONG_1_D').forecast()
+    forecast = csvCTSEStrategyBacktestData().read(instrument, 'DMA_LONG_1_D').get_raw_forecast()
     # assert (price.index == forecast.index).all()
     return forecast
 
