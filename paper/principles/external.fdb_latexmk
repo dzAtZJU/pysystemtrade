@@ -1,13 +1,10 @@
 # Fdb version 3
-["pdflatex"] 1666588399 "/Users/weiranzhou/Code/pysystemtrade/paper/tex.tex" "tex.pdf" "tex" 1666588399
-  "/Users/weiranzhou/Code/pysystemtrade/paper/tex.tex" 1666588398 1631 a71e2e086d876150f3d012a2559a40dd ""
+["pdflatex"] 1666863395 "/Users/weiranzhou/Code/pysystemtrade/paper/principles/external.tex" "external.pdf" "external" 1666863395
+  "/Users/weiranzhou/Code/pysystemtrade/paper/principles/external.tex" 1666863395 876 ec0d58160a627e62f6c8601ce38d396b ""
   "/usr/local/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
-  "/usr/local/texlive/2022/texmf-dist/fonts/tfm/public/cm/cmbx12.tfm" 1136768653 1324 c910af8c371558dc20f2d7822f66fe64 ""
-  "/usr/local/texlive/2022/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1136768653 1288 655e228510b4c2a1abe905c368440826 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1136768653 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb" 1248133631 34811 78b52f49e893bcba91bd7581cdc144c0 ""
-  "/usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1248133631 32080 340ef9bf63678554ee606688e7b5339d ""
   "/usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1248133631 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb" 1248133631 37944 359e864bd06cde3b1cf57bb20757fb06 ""
   "/usr/local/texlive/2022/texmf-dist/tex/latex/amscls/amsthm.sty" 1591045760 12594 0d51ac3a545aaaa555021326ff22a6cc ""
@@ -18,9 +15,9 @@
   "/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1647878959 4410336 7d30a02e9fa9a16d7d1f8d037ba69641 ""
   "/usr/local/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt" 1665986346 2826444 51bd52a2044608f61fc18424c5858b0b ""
   "/usr/local/texlive/2022/texmf.cnf" 1647878952 577 209b46be99c9075fd74d4c0369380e8c ""
-  "tex.aux" 1666588399 204 648a9305e2f3c3afe1d639ed048aafc7 "pdflatex"
-  "tex.tex" 1666588398 1631 a71e2e086d876150f3d012a2559a40dd ""
+  "external.aux" 1666863395 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "external.tex" 1666863395 876 ec0d58160a627e62f6c8601ce38d396b ""
   (generated)
-  "tex.aux"
-  "tex.log"
-  "tex.pdf"
+  "external.aux"
+  "external.log"
+  "external.pdf"

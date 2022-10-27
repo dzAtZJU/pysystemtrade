@@ -128,3 +128,48 @@ class futuresContractData(baseData):
         self, contract_object: futuresContract
     ):
         raise NotImplementedError(USE_CHILD_CLASS_ERROR)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+who can be my friend?
+music, equation, number
+vega punk
+
+random play, wait for feeling
+divergent play
+regime shift play
+rule breaking play
+
+wait forever
+fuck off human
+diversification
+beauty of diverse
+
+a new game
+text, code, number
+no why, just new game, freshness, just play
+no good, no bad, just play
+so what? fuck off what I a m doing
+If I can't die, I can do whatever
+my body get uncomfortable, ufck
+'''
