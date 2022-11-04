@@ -1,6 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1667271490 "/Users/weiranzhou/Code/pysystemtrade/paper/principles/external.tex" "external.pdf" "external" 1667271490
-  "/Users/weiranzhou/Code/pysystemtrade/paper/principles/external.tex" 1667271489 1674 c7dbf54c694df01401b47f2774fdd624 ""
+["pdflatex"] 1667352702 "/Users/weiranzhou/Code/pysystemtrade/paper/principles/external.tex" "external.pdf" "external" 1667352702
+  "/Users/weiranzhou/Code/pysystemtrade/paper/principles/external.tex" 1667352702 1678 77f96d3acd8f48a52a318390262fc2fa ""
   "/usr/local/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
   "/usr/local/texlive/2022/texmf-dist/fonts/tfm/public/cm/cmti10.tfm" 1136768653 1480 aa8e34af0eb6a2941b776984cf1dfdc4 ""
@@ -15,8 +15,8 @@
   "/usr/local/texlive/2022/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1647878959 4410336 7d30a02e9fa9a16d7d1f8d037ba69641 ""
   "/usr/local/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt" 1665986346 2826444 51bd52a2044608f61fc18424c5858b0b ""
   "/usr/local/texlive/2022/texmf.cnf" 1647878952 577 209b46be99c9075fd74d4c0369380e8c ""
-  "external.aux" 1667271490 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
-  "external.tex" 1667271489 1674 c7dbf54c694df01401b47f2774fdd624 ""
+  "external.aux" 1667352702 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "external.tex" 1667352702 1678 77f96d3acd8f48a52a318390262fc2fa ""
   (generated)
   "external.aux"
   "external.log"
