@@ -13,7 +13,11 @@ forecast_weights:
      ewmac32: 1
 forecast_div_multiplier: 1
 instrument_weights:
-     BRENT-LAST: .33
-     COPPER: .33
-     GOLD: .33
+     FTSECHINAA: 1/6
+     BITCOIN: 1/6
+     GOLD: 1/6
+     CRUDE_W_mini: 1/6
+     IRON: 1/6
+     SOYBEAN: 1/6
+     SP500: 0
 instrument_div_multiplier: 1.5
