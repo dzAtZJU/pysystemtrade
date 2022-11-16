@@ -1,0 +1,23 @@
+#YAML
+percentage_vol_target: 25
+notional_trading_capital: 100_0000
+base_currency: "USD"
+trading_rules:
+  ewmac32:
+     function: systems.provided.rules.ewmac.ewmac_forecast_with_defaults
+     other_args: 
+         Lfast: 32
+         Lslow: 128
+     forecast_scalar: 2.65
+forecast_weights:
+     ewmac32: 1
+forecast_div_multiplier: 1
+instrument_weights:
+     FTSECHINAA: 1/6
+     BITCOIN: 1/6
+     GOLD: 1/6
+     CRUDE_W_mini: 1/6
+     IRON: 1/6
+     SOYBEAN: 1/6
+     SP500: 0
+instrument_div_multiplier: 1.5

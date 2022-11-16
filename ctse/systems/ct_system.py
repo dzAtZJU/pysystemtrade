@@ -83,7 +83,7 @@ def ct_system(
             forecast_weights=dict(dma_long_1_D=1),
             average_absolute_forecast=1,
             base_currency="CNY"
-        ))
+        ), default_filename="ctse.systems.defaults.yaml")
     my_system = System(
         [
             ctseRawData(),

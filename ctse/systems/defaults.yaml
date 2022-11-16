@@ -1,0 +1,14 @@
+instrument_returns_correlation:
+  func: sysquant.estimators.correlation_over_time.correlation_over_time_for_returns
+  interval_frequency: "W"
+  frequency: "7D"
+  date_method: "rolling"
+  using_exponent: True
+  ew_lookback: 75
+  min_periods: 10
+  cleaning: False
+  offdiag: 0.0
+  rollyears: 5
+  floor_at_zero: False
+  forward_fill_price_index: True
+  clip: 0.99
