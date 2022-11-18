@@ -32,5 +32,5 @@ def simplesystem(data, config, log_level="on"):
 if __name__ == '__main__':
     from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
     
-    my_system = simplesystem(csvFuturesSimData(), 'paper.systems.simplesystemconfig.yaml')
-    my_system.accounts.portfolio()
+    my_system = simplesystem(csvFuturesSimData(), 'paper.systems.china.yaml')
+    my_system.get_instrument_list()
