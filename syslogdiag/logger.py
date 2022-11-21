@@ -2,7 +2,7 @@ from copy import copy
 
 from syslogdiag.log_entry import LOG_MAPPING, DEFAULT_LOG_MSG_LEVEL, logEntry
 
-ALLOWED_LOG_LEVELS = ["off", "terse", "on"]
+ALLOWED_LOG_LEVELS = ["close eye", "off", "terse", "on"]
 DEFAULT_LOG_LEVEL = "off"
 
 

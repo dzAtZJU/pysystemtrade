@@ -30,6 +30,8 @@ class logtoscreen(logger):
             attributes=attributes,
             log_id=log_id
         )
+        if log_level == 'close eye':
+            return
 
         if msglevel == 0:
             if log_level == "on":
