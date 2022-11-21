@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from sysquant.estimators.diversification_multipliers import diversification_mult_single_period
 from sysquant.optimisation.weights import portfolioWeights
 from syslogdiag.log_to_screen import logtoscreen
+from syscore.fileutils import get_filename_for_package
 
 log = logtoscreen('csvFuturesSimData')
 log.set_logging_level('close eye')
@@ -46,11 +47,12 @@ for N in range(2, 36):
             idms.append(idm)
         df = pd.DataFrame({
                 'date': dates,
-                'idm': idms
+                'idm': idms,
+                'N': 2
             })
         if N not in n_2_idms:
             n_2_idms[N] = df
         else:
-            n_2_idms[N] = pd.concat([n_2_idms[N], df])
+            n_2_idms[N] = pd.concat([n_2_idms[N], df]).reset_index(drop=True)
 
-n_2_idms
+pd.concat(n_2_idms.values()).to_csv(get_filename_for_package('paper.topic.diversify.random-weights.csv'))

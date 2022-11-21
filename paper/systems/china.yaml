@@ -1,16 +1,16 @@
 #YAML
 percentage_vol_target: 25
-notional_trading_capital: 100_0000
-base_currency: "USD"
+notional_trading_capital: 10000_0000
+base_currency: "CNY"
 trading_rules:
   ewmac4:
      function: paper.systems.rules.mac.ewmac
      other_args: 
-         Lfast: 4
-         Lslow: 16
+         Lfast: 6
+         Lslow: 24
      forecast_scalar: 1
-forecast_weights:
-     ewmac4: 1
+# forecast_weights:
+#      ewmac4: 1
 forecast_div_multiplier: 1
 instrument_weights:
      RB: 0.05
