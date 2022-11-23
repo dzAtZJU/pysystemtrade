@@ -11,13 +11,6 @@ from ctse.systems.positionsizing import ctsePositionSizing
 
 from systems.portfolio import Portfolios
 import pandas as pd
-from syscore.dateutil
-
-
-
-
-
-s import ROOT_BDAYS_INYEAR
 from ctse.systems.rules.dma_long import dma_long_1_D
 import numpy as np
 
