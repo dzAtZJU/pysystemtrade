@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.signal import welch
+from scipy.signal import welch, periodogram
 
 def psd(y_values, sampling_frequency, mph=1):
     '''
@@ -13,7 +13,7 @@ def psd(y_values, sampling_frequency, mph=1):
         the number of samples per second (or per other unit)
     '''
 
-    f_values, psd_values = welch(y_values, fs=sampling_frequency)
+    f_values, psd_values = periodogram(y_values, fs=sampling_frequency, scaling='spectrum')
     indices_peaks = detect_peaks(psd_values, mph)
 
     fig, ax = plt.subplots(figsize=(15, 6))
@@ -29,7 +29,7 @@ def psd(y_values, sampling_frequency, mph=1):
     plt.show()
  
 def signal_fft(sampled_signal, sampling_frequency, mph=100):
-    assert len(sampled_signal > 50)
+    assert len(sampled_signal) > 50
     trend =  pd.Series(savgol_filter(sampled_signal, len(sampled_signal),1), index=sampled_signal.index)
     trend.plot()
     detrended = (sampled_signal - trend).rename('detrended')

@@ -6,8 +6,8 @@ trading_rules:
   ewmac4:
      function: paper.systems.rules.mac.ewmac
      other_args: 
-         Lfast: 6
-         Lslow: 24
+         Lfast: 16
+         Lslow: 64
      forecast_scalar: 1
 # forecast_weights:
 #      ewmac4: 1
