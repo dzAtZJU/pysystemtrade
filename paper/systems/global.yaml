@@ -20,5 +20,6 @@ instrument_weights:
      IRON: 0.1
      SOYBEAN: 0.1
      SP500: 0.1
+     CHF: 0.1
 instrument_div_multiplier: 1
 position_sizing_method: 'none_so_every_trade_cash_all_in'

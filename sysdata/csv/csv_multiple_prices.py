@@ -45,7 +45,7 @@ class csvFuturesMultiplePricesData(futuresMultiplePricesData):
         return files_with_extension_in_pathname(self.datapath, ".csv")
 
     def _get_multiple_prices_without_checking(
-        self, instrument_code: str
+        self, instrument_code: str, check_data=True
     ) -> futuresMultiplePrices:
 
         instr_all_price_data = self._read_instrument_prices(instrument_code)
@@ -54,7 +54,7 @@ class csvFuturesMultiplePricesData(futuresMultiplePricesData):
                 contract_col_name
             ].apply(str_of_int)
 
-        return futuresMultiplePrices(instr_all_price_data)
+        return futuresMultiplePrices(instr_all_price_data, check_data)
 
     def _delete_multiple_prices_without_any_warning_be_careful(
         self, instrument_code: str
