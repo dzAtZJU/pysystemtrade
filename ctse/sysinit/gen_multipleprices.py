@@ -26,7 +26,7 @@ def process_multiple_prices_all_instruments(
             ]
         csv = csv.set_index('DATETIME')
         csv = csv[['PRICE_CONTRACT', 'OPEN', 'OPEN1', 'CLOSE', 'CLOSE1']]
-        csv.columns = ['PRICE_CONTRACT', 'PRICE', 'FORWARD', 'CLOSE', 'CLOSE1']
+        csv.columns = ['PRICE_CONTRACT', 'PRICE', 'FORWARD', 'CLOSE', 'FORWARD_CLOSE']
 
         def t(name):
             ins, cont, _ = re.split('(\d+)', name)
@@ -42,8 +42,8 @@ def process_multiple_prices_all_instruments(
             if current_row.FORWARD is not None:
                 csv.loc[previous_row.name, 'FORWARD'] = current_row.FORWARD
                 csv.loc[dateindex, 'FORWARD'] = None
-                csv.loc[previous_row.name, 'CLOSE1'] = current_row.CLOSE1
-                csv.loc[dateindex, 'CLOSE1'] = None
+                csv.loc[previous_row.name, 'FORWARD_CLOSE'] = current_row.FORWARD_CLOSE
+                csv.loc[dateindex, 'FORWARD_CLOSE'] = None
 
             previous_row = current_row
         
