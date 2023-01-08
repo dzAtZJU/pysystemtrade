@@ -19,14 +19,14 @@ def process_multiple_prices_all_instruments(
         if (only is not None) and (only is not  ins):
             continue
         print(ins)
-        csv = pd.read_excel(fp, header=None).iloc[:, 1:]
+        csv = pd.read_excel(fp, header=None, engine='openpyxl').iloc[:, 1:]
         csv.columns = [
-            'DATETIME', 'PRICE_CONTRACT', 'OPEN', 'PRICE', 'HIGH', 'LOW',
-            'VOLUME', 'v1', 'v2', 't1', 't2', 't3', 'Contract1', 'FORWARD', 'CLOSE1', 'HIGH1', 'LOW1', 't4'
+            'DATETIME', 'PRICE_CONTRACT', 'OPEN', 'CLOSE', 'HIGH', 'LOW',
+            'VOLUME', 'v1', 'v2', 't1', 't2', 't3', 'Contract1', 'OPEN1', 'CLOSE1', 'HIGH1', 'LOW1', 't4'
             ]
         csv = csv.set_index('DATETIME')
-        csv = csv[['PRICE_CONTRACT', 'OPEN', 'FORWARD']]
-        csv.columns = ['PRICE_CONTRACT', 'PRICE', 'FORWARD']
+        csv = csv[['PRICE_CONTRACT', 'OPEN', 'OPEN1', 'CLOSE', 'CLOSE1']]
+        csv.columns = ['PRICE_CONTRACT', 'PRICE', 'FORWARD', 'CLOSE', 'FORWARD_CLOSE']
 
         def t(name):
             ins, cont, _ = re.split('(\d+)', name)
@@ -42,10 +42,14 @@ def process_multiple_prices_all_instruments(
             if current_row.FORWARD is not None:
                 csv.loc[previous_row.name, 'FORWARD'] = current_row.FORWARD
                 csv.loc[dateindex, 'FORWARD'] = None
+                csv.loc[previous_row.name, 'FORWARD_CLOSE'] = current_row.FORWARD_CLOSE
+                csv.loc[dateindex, 'FORWARD_CLOSE'] = None
 
             previous_row = current_row
         
-        csv.loc[:, ['CARRY', 'CARRY_CONTRACT', 'FORWARD_CONTRACT']] = None
+        csv.loc[:, 'CARRY'] = None
+        csv.loc[:, 'CARRY_CONTRACT'] = None
+        csv.loc[:, 'FORWARD_CONTRACT'] = None
 
         csv_multiple_prices.add_multiple_prices(ins, csv, ignore_duplication=True)
 

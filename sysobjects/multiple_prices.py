@@ -68,9 +68,9 @@ class singleRowMultiplePrices:
 
 
 class futuresMultiplePrices(pd.DataFrame):
-    def __init__(self, data):
-
-        _check_valid_multiple_price_data(data)
+    def __init__(self, data, check_data=True):
+        if check_data:
+            _check_valid_multiple_price_data(data)
         super().__init__(data)
 
         data.index.name = "index"  # arctic compatible
