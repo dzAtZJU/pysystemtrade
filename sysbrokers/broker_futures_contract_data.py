@@ -1,5 +1,6 @@
-from syscore.objects import missing_contract
-from syscore.dateutils import  listOfOpeningTimes
+from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
+from syscore.exceptions import missingContract
+from syscore.objects import market_closed
 from sysdata.futures.contracts import futuresContractData
 
 from sysobjects.contract_dates_and_expiries import expiryDate
@@ -22,8 +23,10 @@ class brokerFuturesContractData(futuresContractData):
 
     def is_contract_okay_to_trade(self, futures_contract: futuresContract) -> bool:
         new_log = futures_contract.log(self.log)
-        trading_hours = self.get_trading_hours_for_contract(futures_contract)
-        if trading_hours is missing_contract:
+
+        try:
+            trading_hours = self.get_trading_hours_for_contract(futures_contract)
+        except missingContract:
             new_log.critical(
                 "Error! Cannot find active contract! Expired? interactive_update_roll_status.py not executed?"
             )
@@ -35,12 +38,21 @@ class brokerFuturesContractData(futuresContractData):
     def less_than_N_hours_of_trading_left_for_contract(
         self, contract_object: futuresContract, N_hours: float = 1.0
     ) -> bool:
-        trading_hours = self.get_trading_hours_for_contract(contract_object)
+        try:
+            trading_hours = self.get_trading_hours_for_contract(contract_object)
+        except missingContract:
+            return False
 
-        return trading_hours.less_than_N_hours_left(N_hours=N_hours)
+        less_than_N_hours_of_trading_left_for_contract = \
+            trading_hours.less_than_N_hours_left(N_hours=N_hours)
+
+        if less_than_N_hours_of_trading_left_for_contract is market_closed:
+            return market_closed
+
+        return less_than_N_hours_of_trading_left_for_contract
 
     def get_trading_hours_for_contract(self, futures_contract: futuresContract) -> \
-            listOfOpeningTimes:
+            listOfTradingHours:
         raise NotImplementedError
 
 

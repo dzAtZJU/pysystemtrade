@@ -1,4 +1,5 @@
-from syscore.dateutils import SECONDS_PER_HOUR, openingTimes, listOfOpeningTimes
+from syscore.dateutils import SECONDS_PER_HOUR
+from sysobjects.production.trading_hours.trading_hours import tradingHours, listOfTradingHours
 from syscore.interactive import (
     get_and_convert,
     run_interactive_menu,
@@ -8,7 +9,8 @@ from syscore.interactive import (
 )
 from syscore.genutils import progressBar
 from syscore.pdutils import set_pd_print_options
-from syscore.objects import user_exit, arg_not_supplied, missing_contract, ALL_ROLL_INSTRUMENTS, missing_data
+from syscore.objects import user_exit, arg_not_supplied, ALL_ROLL_INSTRUMENTS, missing_data
+from syscore.exceptions import missingContract
 from sysexecution.orders.list_of_orders import listOfOrders
 
 from sysdata.data_blob import dataBlob
@@ -61,7 +63,7 @@ account_curve_report_config
 
 
 def interactive_diagnostics():
-    print("\n\n INTERACTIVE DIAGONSTICS\n\n")
+    print("\n\n INTERACTIVE DIAGNOSTICS\n\n")
     set_pd_print_options()
     with dataBlob(log_name="Interactive-Diagnostics") as data:
         menu = run_interactive_menu(
@@ -70,17 +72,17 @@ def interactive_diagnostics():
             exit_option=-1,
             another_menu=-2,
         )
-    still_running = True
-    while still_running:
-        option_chosen = menu.propose_options_and_get_input()
-        if option_chosen == -1:
-            print("FINISHED")
-            return None
-        if option_chosen == -2:
-            continue
+        still_running = True
+        while still_running:
+            option_chosen = menu.propose_options_and_get_input()
+            if option_chosen == -1:
+                print("FINISHED")
+                return None
+            if option_chosen == -2:
+                continue
 
-        method_chosen = dict_of_functions[option_chosen]
-        method_chosen(data)
+            method_chosen = dict_of_functions[option_chosen]
+            method_chosen(data)
 
 
 top_level_menu_of_options = {
@@ -674,13 +676,13 @@ def display_a_dict_of_trading_hours(all_trading_hours):
         )
 
 MAX_WIDTH_OF_PRINTABLE_TRADING_HOURS = 3
-def nice_print_list_of_trading_hours(trading_hours: listOfOpeningTimes) -> str:
+def nice_print_list_of_trading_hours(trading_hours: listOfTradingHours) -> str:
     list_of_nice_str = [nice_print_trading_hours(trading_hour_entry)
                         for trading_hour_entry in trading_hours[:MAX_WIDTH_OF_PRINTABLE_TRADING_HOURS]]
     nice_string = " ".join(list_of_nice_str)
     return nice_string
 
-def nice_print_trading_hours(trading_hour_entry: openingTimes) -> str:
+def nice_print_trading_hours(trading_hour_entry: tradingHours) -> str:
     start_datetime = trading_hour_entry.opening_time
     end_datetime = trading_hour_entry.closing_time
     diff_time = end_datetime - start_datetime
@@ -711,8 +713,9 @@ def get_trading_hours_for_all_instruments(data=arg_not_supplied):
     all_trading_hours = {}
     for instrument_code in list_of_instruments:
         p.iterate()
-        trading_hours = get_trading_hours_for_instrument(data, instrument_code)
-        if trading_hours is missing_contract:
+        try:
+            trading_hours = get_trading_hours_for_instrument(data, instrument_code)
+        except missingContract:
             print("*** NO EXPIRY FOR %s ***" % instrument_code)
             continue
 
@@ -725,13 +728,13 @@ def get_trading_hours_for_all_instruments(data=arg_not_supplied):
     return all_trading_hours
 
 
-def check_trading_hours(trading_hours: listOfOpeningTimes,
+def check_trading_hours(trading_hours: listOfTradingHours,
                         instrument_code: str):
     for trading_hours_this_instrument in trading_hours:
         check_trading_hours_one_day(trading_hours_this_instrument, instrument_code)
 
-def check_trading_hours_one_day(trading_hours_this_instrument: openingTimes,
-                        instrument_code: str):
+def check_trading_hours_one_day(trading_hours_this_instrument: tradingHours,
+                                instrument_code: str):
     if trading_hours_this_instrument.opening_time >= \
             trading_hours_this_instrument.closing_time:
         print(
@@ -741,7 +744,7 @@ def check_trading_hours_one_day(trading_hours_this_instrument: openingTimes,
 
 
 def get_trading_hours_for_instrument(data: dataBlob,
-                                     instrument_code: str) -> listOfOpeningTimes:
+                                     instrument_code: str) -> listOfTradingHours:
 
     diag_contracts = dataContracts(data)
     contract_id = diag_contracts.get_priced_contract_id(instrument_code)

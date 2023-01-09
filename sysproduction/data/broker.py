@@ -10,14 +10,16 @@ from sysbrokers.broker_capital_data import brokerCapitalData
 from sysbrokers.broker_contract_position_data import brokerContractPositionData
 from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
+from syscore.exceptions import missingContract, missingData
 
 from syscore.objects import (
     arg_not_supplied,
     missing_order,
-    missing_contract,
-    missing_data
+    missing_data,
+    market_closed
 )
-from syscore.dateutils import Frequency, DAILY_PRICE_FREQ, listOfOpeningTimes
+from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
+from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 
 from sysdata.data_blob import dataBlob
 from sysdata.tools.cleaner import apply_price_cleaning
@@ -122,13 +124,14 @@ class dataBroker(productionDataLayerGeneric):
             cleaning_config = arg_not_supplied
     ) -> futuresContractPrices:
 
-        broker_prices_raw = \
-                self.get_prices_at_frequency_for_contract_object(contract_object=contract_object,
-                                                         frequency = frequency)
-        daily_data = frequency is DAILY_PRICE_FREQ
-        if broker_prices_raw is missing_data:
+        try:
+            broker_prices_raw = \
+                    self.get_prices_at_frequency_for_contract_object(contract_object=contract_object,
+                                                             frequency = frequency)
+        except missingData:
             return missing_data
 
+        daily_data = frequency is DAILY_PRICE_FREQ
         broker_prices = apply_price_cleaning(data = self.data,
                                              daily_data=daily_data,
                                              broker_prices_raw = broker_prices_raw,
@@ -179,11 +182,14 @@ class dataBroker(productionDataLayerGeneric):
             ## irespective of instrument traded
             return True
 
-        result = self.broker_futures_contract_data.less_than_N_hours_of_trading_left_for_contract(
+        less_than_N_hours_of_trading_left = self.broker_futures_contract_data.less_than_N_hours_of_trading_left_for_contract(
             contract, N_hours=N_hours
         )
 
-        return result
+        if less_than_N_hours_of_trading_left is market_closed:
+            return market_closed
+
+        return less_than_N_hours_of_trading_left
 
     def is_contract_okay_to_trade(self, contract: futuresContract) -> bool:
         check_open = self.broker_futures_contract_data.is_contract_okay_to_trade(
@@ -197,7 +203,7 @@ class dataBroker(productionDataLayerGeneric):
         )
         return result
 
-    def get_trading_hours_for_contract(self, contract: futuresContract) -> listOfOpeningTimes:
+    def get_trading_hours_for_contract(self, contract: futuresContract) -> listOfTradingHours:
         result = self.broker_futures_contract_data.get_trading_hours_for_contract(
             contract
         )
@@ -236,10 +242,11 @@ class dataBroker(productionDataLayerGeneric):
     def update_expiry_for_single_contract(
         self, original_contract: futuresContract
     ) -> futuresContract:
-        actual_expiry = self.get_actual_expiry_date_for_single_contract(
-            original_contract
-        )
-        if actual_expiry is missing_contract:
+        try:
+            actual_expiry = self.get_actual_expiry_date_for_single_contract(
+                original_contract
+            )
+        except missingContract:
             log = original_contract.specific_log(self.data.log)
             log.warn(
                 "Contract %s is missing from IB probably expired - need to manually close on DB"
@@ -363,7 +370,11 @@ class dataBroker(productionDataLayerGeneric):
         :return: tuple: side_price, mid_price OR missing_data
         """
 
-        tick_data = self.get_recent_bid_ask_tick_data_for_contract_object(contract)
+        try:
+            tick_data = self.get_recent_bid_ask_tick_data_for_contract_object(contract)
+        except missingData:
+            tick_data = missing_data
+
         analysis_of_tick_data = analyse_tick_data_frame(
             tick_data, qty, forward_fill=True, replace_qty_nans=True
         )

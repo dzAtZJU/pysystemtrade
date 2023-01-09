@@ -11,6 +11,7 @@ true_if_answer_is_yes
 from syscore.algos import magnitude
 from syscore.pdutils import set_pd_print_options
 from syscore.dateutils import CALENDAR_DAYS_IN_YEAR, DAILY_PRICE_FREQ
+from syscore.genutils import round_significant_figures
 from syscore.objects import missing_data
 
 from sysinit.futures.repocsv_instrument_config import copy_instrument_config_from_csv_to_mongo
@@ -74,17 +75,17 @@ def interactive_controls():
             exit_option=-1,
             another_menu=-2,
         )
-    still_running = True
-    while still_running:
-        option_chosen = menu.propose_options_and_get_input()
-        if option_chosen == -1:
-            print("FINISHED")
-            return None
-        if option_chosen == -2:
-            continue
+        still_running = True
+        while still_running:
+            option_chosen = menu.propose_options_and_get_input()
+            if option_chosen == -1:
+                print("FINISHED")
+                return None
+            if option_chosen == -2:
+                continue
 
-        method_chosen = dict_of_functions[option_chosen]
-        method_chosen(data)
+            method_chosen = dict_of_functions[option_chosen]
+            method_chosen(data)
 
 
 top_level_menu_of_options = {
@@ -820,7 +821,7 @@ def get_list_of_changes_to_make_to_slippage(
 
     for instrument_code in instrument_list:
         pd_row = slippage_comparison_pd.loc[instrument_code]
-        difference = pd_row["% Difference"]
+        difference = pd_row["Difference"]
         configured = pd_row["Configured"]
         suggested_estimate = pd_row["estimate"]
 
@@ -837,7 +838,7 @@ def get_list_of_changes_to_make_to_slippage(
         if mult_factor > 1:
             print("ALL VALUES MULTIPLIED BY %f INCLUDING INPUTS!!!!" % mult_factor)
 
-        suggested_estimate_multiplied = suggested_estimate * mult_factor
+        suggested_estimate_multiplied = round_significant_figures(suggested_estimate * mult_factor,2)
         configured_estimate_multiplied = configured * mult_factor
 
         print(pd_row * mult_factor)
@@ -846,7 +847,7 @@ def get_list_of_changes_to_make_to_slippage(
             % (configured_estimate_multiplied, suggested_estimate_multiplied),
             type_expected=float,
             allow_default=True,
-            default_value=suggested_estimate * mult_factor,
+            default_value=suggested_estimate_multiplied,
         )
 
         if estimate_to_use_with_mult == configured_estimate_multiplied:
@@ -854,7 +855,7 @@ def get_list_of_changes_to_make_to_slippage(
             continue
         if estimate_to_use_with_mult != suggested_estimate_multiplied:
             difference = (
-                abs(estimate_to_use_with_mult / suggested_estimate_multiplied) - 1.0
+                abs((estimate_to_use_with_mult / suggested_estimate_multiplied) - 1.0)
             )
             if difference > 0.5:
                 ans = input(
@@ -992,9 +993,8 @@ def delete_instrument_from_prices(data: dataBlob):
     update_prices.delete_merged_contract_prices_for_instrument_code(instrument_code, are_you_sure=True)
     update_prices.delete_multiple_prices(instrument_code, are_you_sure=True)
     update_prices.delete_adjusted_prices(instrument_code, are_you_sure=True)
-
-    spreads_data = spreadsForInstrumentData(data)
-    spreads_data.delete_spreads(instrument_code, are_you_sure=True)
+    
+    update_prices.delete_spreads(instrument_code, are_you_sure=True)
 
     data_contracts= dataContracts(data)
     data_contracts.delete_all_contracts_for_instrument(instrument_code, are_you_sure=True)

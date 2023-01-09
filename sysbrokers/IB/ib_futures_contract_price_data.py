@@ -1,5 +1,5 @@
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ, MIXED_FREQ
-from syscore.objects import missing_contract, missing_data, failure
+from syscore.exceptions import missingContract, missingData
 
 from sysbrokers.IB.ib_futures_contracts_data import ibFuturesContractData
 from sysbrokers.IB.ib_instruments_data import ibFuturesInstrumentData
@@ -112,12 +112,13 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
         :param contract_object:
         :return: bool
         """
-        futures_contract_with_IB_data = (
-            self.futures_contract_data.get_contract_object_with_IB_data(
-                futures_contract
+        try:
+            futures_contract_with_IB_data = (
+                self.futures_contract_data.get_contract_object_with_IB_data(
+                    futures_contract
+                )
             )
-        )
-        if futures_contract_with_IB_data is missing_contract:
+        except missingContract:
             return False
         else:
             return True
@@ -172,15 +173,16 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
 
         ## Override this because don't want to check for existing data first
 
-        prices =  self._get_prices_at_frequency_for_contract_object_no_checking(
-            futures_contract_object=contract_object,
-            frequency=frequency
-        )
-        if prices is missing_data:
+        try:
+            prices =  self._get_prices_at_frequency_for_contract_object_no_checking(
+                futures_contract_object=contract_object,
+                frequency=frequency
+            )
+        except missingData:
             if return_empty:
                 return futuresContractPrices.create_empty()
             else:
-                return missing_data
+                raise
 
         return prices
 
@@ -207,14 +209,15 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
         """
         new_log = futures_contract_object.log(self.log)
 
-        contract_object_with_ib_broker_config = (
-            self.futures_contract_data.get_contract_object_with_IB_data(
-                futures_contract_object, allow_expired=allow_expired
+        try:
+            contract_object_with_ib_broker_config = (
+                self.futures_contract_data.get_contract_object_with_IB_data(
+                    futures_contract_object, allow_expired=allow_expired
+                )
             )
-        )
-        if contract_object_with_ib_broker_config is missing_contract:
+        except missingContract:
             new_log.warn("Can't get data for %s" % str(futures_contract_object))
-            return missing_data
+            raise missingData
 
         price_data = self._get_prices_at_frequency_for_ibcontract_object_no_checking(
             contract_object_with_ib_broker_config,
@@ -233,18 +236,18 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
 
         new_log = contract_object_with_ib_broker_config.log(self.log)
 
-        price_data = self.ib_client.broker_get_historical_futures_data_for_contract(
-            contract_object_with_ib_broker_config,
-            bar_freq=freq,
-            allow_expired=allow_expired,
-        )
-
-        if price_data is missing_data:
+        try:
+            price_data = self.ib_client.broker_get_historical_futures_data_for_contract(
+                contract_object_with_ib_broker_config,
+                bar_freq=freq,
+                allow_expired=allow_expired,
+            )
+        except missingData:
             new_log.warn(
                 "Something went wrong getting IB price data for %s"
                 % str(contract_object_with_ib_broker_config)
             )
-            return missing_data
+            raise
 
         if len(price_data) == 0:
             new_log.warn(
@@ -261,10 +264,11 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
 
         new_log = order.log_with_attributes(self.log)
 
-        contract_object_with_ib_data = (
-            self.futures_contract_data.get_contract_object_with_IB_data(contract_object)
-        )
-        if contract_object_with_ib_data is missing_contract:
+        try:
+            contract_object_with_ib_data = (
+                self.futures_contract_data.get_contract_object_with_IB_data(contract_object)
+            )
+        except missingContract:
             new_log.warn("Can't get data for %s" % str(contract_object))
             return futuresContractPrices.create_empty()
 
@@ -283,10 +287,11 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
 
         new_log = order.log_with_attributes(self.log)
 
-        contract_object_with_ib_data = (
-            self.futures_contract_data.get_contract_object_with_IB_data(contract_object)
-        )
-        if contract_object_with_ib_data is missing_contract:
+        try:
+            contract_object_with_ib_data = (
+                self.futures_contract_data.get_contract_object_with_IB_data(contract_object)
+            )
+        except missingContract:
             new_log.warn("Can't get data for %s" % str(contract_object))
             return futuresContractPrices.create_empty()
 
@@ -306,19 +311,20 @@ class ibFuturesContractPriceData(brokerFuturesContractPriceData):
         """
         new_log = contract_object.log(self.log)
 
-        contract_object_with_ib_data = (
-            self.futures_contract_data.get_contract_object_with_IB_data(contract_object)
-        )
-        if contract_object_with_ib_data is missing_contract:
+        try:
+            contract_object_with_ib_data = (
+                self.futures_contract_data.get_contract_object_with_IB_data(contract_object)
+            )
+        except missingContract:
             new_log.warn("Can't get data for %s" % str(contract_object))
             return dataFrameOfRecentTicks.create_empty()
 
-        tick_data = self.ib_client.ib_get_recent_bid_ask_tick_data(
-            contract_object_with_ib_data
-        )
-
-        if tick_data is missing_contract:
-            return missing_data
+        try:
+            tick_data = self.ib_client.ib_get_recent_bid_ask_tick_data(
+                contract_object_with_ib_data
+            )
+        except missingContract:
+            raise missingData
 
         tick_data_as_df = from_ib_bid_ask_tick_data_to_dataframe(tick_data)
 

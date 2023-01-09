@@ -13,13 +13,14 @@ class named_object:
         return self._name
 
 
-missing_contract = named_object("missing contract")
 missing_instrument = named_object("missing instrument")
 
 missing_order = named_object("missing order")
 locked_order = named_object("locked order")
 duplicate_order = named_object("duplicate order")
 zero_order = named_object("zero order")
+
+market_closed = named_object("market closed")
 
 fill_exceeds_trade = named_object("fill too big for trade")
 
@@ -215,14 +216,6 @@ def hasallattr(some_object, attrlist=[]):
 
 def get_class_name(class_object):
     return class_object.__name__
-
-
-class missingData(Exception):
-    pass
-
-
-class existingData(Exception):
-    pass
 
 
 missing_file = named_object("missing file")

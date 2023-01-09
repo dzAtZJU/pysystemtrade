@@ -2,7 +2,8 @@ import datetime
 
 import numpy as np
 
-from syscore.objects import missing_contract, arg_not_supplied, missing_data
+from syscore.exceptions import missingData
+from syscore.objects import arg_not_supplied, missing_data
 from syscore.dateutils import Frequency, from_config_frequency_to_frequency, n_days_ago
 
 from sysobjects.contracts import futuresContract
@@ -65,11 +66,11 @@ class diagPrices(productionDataLayerGeneric):
         intraday_frequency_as_str = config.get_element_or_missing_data(
             "intraday_frequency"
         )
-        intraday_frequency = from_config_frequency_to_frequency(
-            intraday_frequency_as_str
-        )
-
-        if intraday_frequency is missing_data:
+        try:
+            intraday_frequency = from_config_frequency_to_frequency(
+                intraday_frequency_as_str
+            )
+        except missingData:
             error_msg = (
                 "Intraday frequency of %s is not recognised as a valid frequency"
                 % str(intraday_frequency)
@@ -180,8 +181,6 @@ class diagPrices(productionDataLayerGeneric):
     ) -> dictFuturesContractPrices:
         dict_of_prices = {}
         for contract_date_str in list_of_contract_date_str:
-            if contract_date_str is missing_contract:
-                continue
             # Could blow up here if don't have prices for a contract??
             contract = futuresContract(instrument_code, contract_date_str)
             prices = self.get_merged_prices_for_contract_object(contract)
@@ -299,6 +298,9 @@ class updatePrices(productionDataLayerGeneric):
         self.db_spreads_for_instrument_data.add_spread_entry(
             instrument_code, spread=spread
         )
+
+    def delete_spreads(self, instrument_code: str, are_you_sure: bool = False):
+        self.db_spreads_for_instrument_data.delete_spreads(instrument_code, are_you_sure=are_you_sure)
 
     @property
     def db_futures_adjusted_prices_data(self) -> futuresAdjustedPricesData:

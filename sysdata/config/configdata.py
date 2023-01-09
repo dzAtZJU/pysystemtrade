@@ -14,14 +14,16 @@ trading_rules - a specification of the trading rules for a system
 
 from pathlib import Path
 import os
+from typing import Any
 
 import yaml
 
+from syscore.exceptions import missingData
 from syscore.fileutils import get_filename_for_package
 from syscore.objects import missing_data, arg_not_supplied
 from sysdata.config.defaults import get_system_defaults_dict
 from sysdata.config.private_config import get_private_config_as_dict, PRIVATE_CONFIG_FILE
-from sysdata.config.private_directory import get_full_path_for_config, PRIVATE_CONFIG_DIR_ENV_VAR
+from sysdata.config.private_directory import get_full_path_for_private_config, PRIVATE_CONFIG_DIR_ENV_VAR
 from syslogdiag.log_to_screen import logtoscreen
 from sysdata.config.fill_config_dict_with_defaults import fill_config_dict_with_defaults
 
@@ -93,13 +95,22 @@ class Config(object):
                 elements.append(element_name)
                 self._elements = elements
 
-    def get_element_or_missing_data(self, element_name):
-        result = getattr(self, element_name, missing_data)
+    def get_element(self, element_name):
+        try:
+            result = getattr(self, element_name)
+        except AttributeError:
+            raise missingData("Missing config element %s" % element_name)
         return result
 
-    def get_element_or_arg_not_supplied(self, element_name):
-        result = getattr(self, element_name, arg_not_supplied)
+    def get_element_or_default(self, element_name, default):
+        result = getattr(self, element_name, default)
         return result
+
+    def get_element_or_missing_data(self, element_name):
+        return self.get_element_or_default(element_name, missing_data)
+
+    def get_element_or_arg_not_supplied(self, element_name):
+        return self.get_element_or_default(element_name, arg_not_supplied)
 
     def __repr__(self):
         elements = self.elements
@@ -264,7 +275,7 @@ class Config(object):
 
 def default_config():
     if os.getenv(PRIVATE_CONFIG_DIR_ENV_VAR):
-        config = Config(private_filename=get_full_path_for_config(PRIVATE_CONFIG_FILE))
+        config = Config(private_filename=get_full_path_for_private_config(PRIVATE_CONFIG_FILE))
     else:
         config = Config()
     config.fill_with_defaults()

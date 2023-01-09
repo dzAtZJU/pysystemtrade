@@ -542,8 +542,7 @@ class reportingApi(object):
     def _roll_data_as_pd(self, instrument_code: str = ALL_ROLL_INSTRUMENTS):
         roll_data_dict = self.roll_data_dict_for_instrument_code(instrument_code)
 
-        result_pd = pd.DataFrame(roll_data_dict)
-        result_pd = result_pd.transpose()
+        result_pd = pd.DataFrame.from_dict(roll_data_dict, orient='index')
 
         result_pd = result_pd.sort_values("roll_expiry")
 
@@ -825,9 +824,17 @@ class reportingApi(object):
         return get_liquidity_report_data(self.data)
 
     ##### COSTS ######
-    def table_of_sr_costs(self, commission_only=False):
-        if commission_only:
+    def table_of_sr_costs(self,
+                          include_commission: bool = True,
+                          include_spreads: bool = True
+                          ) -> table:
+
+        if not include_commission and not include_spreads:
+            raise Exception("Must include commission or spreads!")
+        elif not include_spreads:
             SR_costs = self.SR_costs_commission_only()
+        elif not include_commission:
+            SR_costs = self.SR_costs_spreads_only()
         else:
             SR_costs = self.SR_costs()
 
@@ -846,6 +853,12 @@ class reportingApi(object):
         return self.cache.get(
             self._SR_costs, include_spread=False, include_commission=True
         )
+
+    def SR_costs_spreads_only(self) -> pd.DataFrame:
+        return self.cache.get(
+            self._SR_costs, include_spread=True, include_commission=False
+        )
+
 
     def _SR_costs(
         self, include_commission: bool = True, include_spread: bool = True
@@ -867,7 +880,7 @@ class reportingApi(object):
         )
 
         combined_df_costs_as_formatted_table = table(
-            "Check of slippage", combined_df_costs
+            "Check of slippage, in price units", combined_df_costs
         )
 
         return combined_df_costs_as_formatted_table

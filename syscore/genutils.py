@@ -10,10 +10,13 @@ import sys
 import numpy as np
 import datetime
 import functools
-
+import math
 from collections import namedtuple
 
 Changes = namedtuple('Changes', ['new', 'existing', 'removing'])
+
+def round_significant_figures(x, figures=3):
+    return round(x, figures - int(math.floor(math.log10(abs(x)))) - 1)
 
 def new_removing_existing(original_list: list, new_list: list):
     existing = list(set(original_list).intersection(set(new_list)))
@@ -503,3 +506,15 @@ if __name__ == "__main__":
     import doctest
 
     doctest.testmod()
+
+
+def intersection_intervals(intervals):
+    start, end = intervals.pop()
+    while intervals:
+         start_temp, end_temp = intervals.pop()
+         start = max(start, start_temp)
+         end = min(end, end_temp)
+
+    if end<start:
+        return []
+    return [start, end]

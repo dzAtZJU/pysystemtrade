@@ -33,7 +33,8 @@ def make_account_curve_plot(daily_pandl: pd.Series,
 def make_account_curve_plot_from_df(pandl_df: pd.DataFrame,
                             start_of_title: str = "",
                             start_date: datetime.datetime = arg_not_supplied,
-                            end_date: datetime.datetime = arg_not_supplied):
+                            end_date: datetime.datetime = arg_not_supplied,
+                            title_style: dict = None):
 
     curve_to_plot = pandl_df.resample("1B").sum()
     if start_date is not arg_not_supplied:
@@ -56,7 +57,7 @@ def make_account_curve_plot_from_df(pandl_df: pd.DataFrame,
                   str(ann_std.round(3).to_dict()),
                   str(ann_sr.round(2).to_dict()))
     curve_to_plot.cumsum().plot()
-    title(full_title)
+    title(full_title, fontdict=title_style)
 
 
 
@@ -74,10 +75,10 @@ def nice_format_min_capital_table(min_capital_pd: pd.DataFrame) -> pd.DataFrame:
     return min_capital_pd
 
 def nice_format_roll_table(roll_table: pd.DataFrame) -> pd.DataFrame:
-    roll_table.volume_priced = roll_table.volume_priced.astype(float)
-    roll_table.volume_priced = roll_table.volume_priced.round(3)
-    roll_table.volume_fwd = roll_table.volume_fwd.astype(float)
-    roll_table.volume_fwd = roll_table.volume_fwd.round(3)
+    roll_table.relative_volume_fwd = roll_table.relative_volume_fwd.astype(float)
+    roll_table.relative_volume_fwd = roll_table.relative_volume_fwd.round(3)
+    roll_table.contract_volume_fwd = roll_table.contract_volume_fwd.astype(int)
+
     return roll_table
 
 def nice_format_slippage_table(slippage_table: pd.DataFrame) -> pd.DataFrame:

@@ -1,6 +1,6 @@
 import datetime as datetime
 import pandas as pd
-from syscore.objects import missing_contract, arg_not_supplied, missing_data
+from syscore.objects import missing_data
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -63,8 +63,6 @@ class diagVolumes(productionDataLayerGeneric):
         self, instrument_code: str, contract_date_str: str
     ) -> float:
 
-        if contract_date_str is missing_contract:
-            return 0.0
         contract = futuresContract(instrument_code, contract_date_str)
         volumes = self.get_daily_volumes_for_contract(contract)
         final_volume = get_smoothed_volume_ignoring_old_data(volumes)
@@ -85,10 +83,11 @@ class diagVolumes(productionDataLayerGeneric):
 
 
 def normalise_volumes(smoothed_volumes: list) -> list:
-    max_smoothed_volume = max(smoothed_volumes)
-    if max_smoothed_volume == 0.0:
-        max_smoothed_volume = NOTIONALLY_ZERO_VOLUME
-    normalised_volumes = [volume / max_smoothed_volume for volume in smoothed_volumes]
+    ## normalise to first contract, normally priced
+    normalised_to_volume = smoothed_volumes[0]
+    if normalised_to_volume == 0.0:
+        normalised_to_volume = NOTIONALLY_ZERO_VOLUME
+    normalised_volumes = [volume / normalised_to_volume for volume in smoothed_volumes]
 
     return normalised_volumes
 
