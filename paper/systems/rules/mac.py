@@ -1,6 +1,6 @@
 import numpy as np
 
-def mac(price, Lfast, Lslow):
+def mac(price, Lfast, Lslow, forecast_strength=True):
     """
     Assumes that 'price' is daily data
 
@@ -19,11 +19,14 @@ def mac(price, Lfast, Lslow):
     
     fast_ewma = price.rolling(Lfast).mean().ffill()
     slow_ewma = price.rolling(Lslow).mean().ffill()
-    raw_ewmac = np.sign(fast_ewma - slow_ewma)
+    if forecast_strength:
+        raw_ewmac = fast_ewma - slow_ewma
+    else:
+        raw_ewmac = np.sign(fast_ewma - slow_ewma)
 
     return raw_ewmac
 
-def ewmac(price, Lfast, Lslow):
+def ewmac(price, Lfast, Lslow, forecast_strength=True):
     """
     Calculate the ewmac trading rule forecast, given a price, volatility and EWMA speeds Lfast and Lslow
 
@@ -66,6 +69,10 @@ def ewmac(price, Lfast, Lslow):
 
     fast_ewma = price.ewm(span=Lfast).mean()
     slow_ewma = price.ewm(span=Lslow).mean()
-    raw_ewmac = np.sign(fast_ewma - slow_ewma)
+
+    if forecast_strength:
+        raw_ewmac = fast_ewma - slow_ewma
+    else:
+        raw_ewmac = np.sign(fast_ewma - slow_ewma)
 
     return raw_ewmac
