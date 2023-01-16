@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"symbol":{"$numberInt":"1"}},"name":"symbol_1","background":true,"unique":true}],"uuid":"82f100a37ca347c0949a37d3ac329692","collectionName":"spot_prices_v3.version_nums","type":"collection"}

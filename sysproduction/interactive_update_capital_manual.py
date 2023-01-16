@@ -1,7 +1,7 @@
 from syscore.objects import success, failure, arg_not_supplied, missing_data
 from syscore.interactive import get_and_convert, print_menu_and_get_response, get_datetime_input, true_if_answer_is_yes
 
-from sysdata.data_blob import dataBlob
+from paper.sysdata.data_blob import dataBlob
 from sysobjects.production.capital import LargeCapitalChange
 from sysproduction.data.capital import dataCapital
 from sysproduction.data.broker import dataBroker
@@ -267,3 +267,6 @@ def delete_all_capital(data: dataBlob):
             )
     else:
         print("OK you decided not to do it")
+
+if __name__ == '__main__':
+    interactive_update_capital_manual()

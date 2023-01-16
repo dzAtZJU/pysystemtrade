@@ -49,7 +49,7 @@ class bufferedOptimalPositions(simpleOptimalPosition):
             "lower_position",
             "upper_position",
             "reference_price",
-            "reference_contract",
+            # "reference_contract",
         ]  # compulsory args
 
     @property

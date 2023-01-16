@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"02526828c6ad41a5b4a62532da00cdfe","collectionName":"spot_prices.ARCTIC","type":"collection"}

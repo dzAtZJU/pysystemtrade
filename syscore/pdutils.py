@@ -47,7 +47,8 @@ def top_and_tail(x: pd.DataFrame, rows=5):
     return pd.concat([x[:rows], x[-rows:]], axis=0)
 
 def prices_to_daily_prices(x):
-    return x.resample("1B").last()
+    # return x.resample("1B").last()
+    return x.resample("1D").last()
 
 
 def how_many_times_a_year_is_pd_frequency(frequency: str) -> float:

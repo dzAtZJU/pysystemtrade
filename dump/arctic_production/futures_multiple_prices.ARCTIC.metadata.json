@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"2a7cb30df2d14c1e9e21c26bb8e7d90b","collectionName":"futures_multiple_prices.ARCTIC","type":"collection"}

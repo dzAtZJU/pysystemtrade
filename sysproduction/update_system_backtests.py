@@ -27,3 +27,10 @@ def update_system_backtests():
                 data, strategy_name, process_name, backtest_function
             )
             system_backtest_runner.run_strategy_method()
+
+if __name__ == '__main__':
+    update_system_backtests()
+    # import numpy as np
+    # import scipy
+    # print(np.__version__)
+    # print(scipy.__version__)

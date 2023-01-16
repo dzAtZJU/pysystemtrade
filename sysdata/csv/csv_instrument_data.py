@@ -12,7 +12,7 @@ from sysobjects.instruments import (
 from syslogdiag.log_to_screen import logtoscreen
 import pandas as pd
 
-INSTRUMENT_CONFIG_PATH = "data.futures.csvconfig"
+INSTRUMENT_CONFIG_PATH = "paper.data.perpetuals.csvconfig"
 CONFIG_FILE_NAME = "instrumentconfig.csv"
 
 

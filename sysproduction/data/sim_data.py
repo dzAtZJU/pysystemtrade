@@ -1,13 +1,9 @@
 from syscore.objects import arg_not_supplied
 
-from sysdata.sim.db_futures_sim_data import dbFuturesSimData
-from sysdata.data_blob import dataBlob
-from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
-from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
-from sysdata.arctic.arctic_spotfx_prices import arcticFxPricesData
+from paper.sysdata.sim.db_perpetuals_sim_data import dbPerpetualsSimData
+from paper.sysdata.data_blob import dataBlob
+from paper.sysdata.arctic.arctic_perpetual_prices import arcticPerpetualsPricesData
 from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
-
 
 def get_sim_data_object_for_production(data=arg_not_supplied) -> dataBlob:
     # Check data has the right elements to do this
@@ -16,12 +12,9 @@ def get_sim_data_object_for_production(data=arg_not_supplied) -> dataBlob:
 
     data.add_class_list(
         [
-            arcticFuturesAdjustedPricesData,
-            arcticFuturesMultiplePricesData,
-            arcticFxPricesData,
+            arcticPerpetualsPricesData,
             mongoFuturesInstrumentData,
-            mongoRollParametersData,
         ]
     )
 
-    return dbFuturesSimData(data)
+    return dbPerpetualsSimData(data)

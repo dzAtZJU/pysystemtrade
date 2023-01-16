@@ -12,7 +12,7 @@ this:
 from syscore.objects import arg_not_supplied, missing_data
 
 from sysdata.config.configdata import Config
-from sysdata.data_blob import dataBlob
+from paper.sysdata.data_blob import dataBlob
 
 from sysobjects.production.optimal_positions import bufferedOptimalPositions
 from sysobjects.production.tradeable_object import instrumentStrategy
@@ -27,7 +27,7 @@ from sysproduction.data.backtest import store_backtest_state
 
 from syslogdiag.log_to_screen import logtoscreen
 
-from systems.provided.futures_chapter15.basesystem import futures_system
+from paper.systems.crypto_system import perpetuals_system
 from systems.basesystem import System
 
 
@@ -131,7 +131,7 @@ def production_classic_futures_system(
     if base_currency is not arg_not_supplied:
         config.base_currency = base_currency
 
-    system = futures_system(data=sim_data, config=config)
+    system = perpetuals_system(data=sim_data, config=config)
     system._log = log
 
     system.set_logging_level(log_level)
@@ -189,9 +189,9 @@ def construct_position_entry(
 
     diag_contracts = dataContracts(data)
     reference_price = system.rawdata.get_daily_prices(instrument_code).iloc[-1]
-    reference_contract = diag_contracts.get_priced_contract_id(instrument_code)
+    # reference_contract = diag_contracts.get_priced_contract_id(instrument_code)
     position_entry = bufferedOptimalPositions(
-        lower_buffer, upper_buffer, reference_price, reference_contract
+        lower_buffer, upper_buffer, reference_price, #reference_contract
     )
 
     return position_entry

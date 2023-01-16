@@ -1,6 +1,6 @@
 import os
 
-DEFAULT_PRIVATE_DIR = "private"
+DEFAULT_PRIVATE_DIR = "paper.private"
 PRIVATE_CONFIG_DIR_ENV_VAR = "PYSYS_PRIVATE_CONFIG_DIR"
 
 
