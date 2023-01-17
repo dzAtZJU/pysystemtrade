@@ -1,8 +1,7 @@
 """
 Utilities to help with pandas
 """
-import numpy
-import pandas
+import numpy as np
 import pandas as pd
 import datetime
 import random
@@ -48,7 +47,7 @@ def top_and_tail(x: pd.DataFrame, rows=5):
 
 def prices_to_daily_prices(x):
     # return x.resample("1B").last()
-    return x.resample("1D").last()
+    return x.resample("1D").apply(lambda x: x[x.index.hour == 17].iloc[-1] if len(x[x.index.hour == 17]) > 0 else np.nan)
 
 
 def how_many_times_a_year_is_pd_frequency(frequency: str) -> float:

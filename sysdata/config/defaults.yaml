@@ -88,7 +88,7 @@ forecast_scalar: 1.0
 #
 #
 instruments_with_threshold: []
-use_forecast_scale_estimates: False
+use_forecast_scale_estimates: True
 #
 forecast_scalar_estimate:
    pool_instruments: True

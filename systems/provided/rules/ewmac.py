@@ -125,6 +125,14 @@ def ewmac(price, vol, Lfast, Lslow):
     return raw_ewmac / vol.ffill()
 
 
+def mac(price, vol, Lfast, Lslow):
+    fast_ewma = price.rolling(Lfast).mean()
+    slow_ewma = price.rolling(Lslow).mean()
+    raw_ewmac = fast_ewma - slow_ewma
+
+    forecast = raw_ewmac / vol.ffill()
+    return forecast
+
 def ewmac_calc_vol(price, Lfast, Lslow, vol_days=35):
     """
     Calculate the ewmac trading rule forecast, given a price and EWMA speeds Lfast, Lslow and number of days to
