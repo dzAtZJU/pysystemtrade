@@ -3,7 +3,7 @@ import numpy as np
 
 from systems.accounts.curves.account_curve_group import accountCurveGroup
 from syscore.genutils import flatten_list
-from syscore.dateutils import ROOT_BDAYS_INYEAR
+from syscore.dateutils import ROOT_BDAYS_INYEAR, RESAMPLE_STR
 
 from syscore.pdutils import listOfDataFrames
 
@@ -268,7 +268,7 @@ class returnsForOptimisationWithCosts(object):
         for type in ["gross", "costs"]:
             account_curve = getattr(account_curve_group, type).to_frame()
 
-            account_curve = account_curve.resample("1B").sum()
+            account_curve = account_curve.resample(RESAMPLE_STR).sum()
 
             # avoid understating vol
             account_curve[account_curve == 0.0] = np.nan

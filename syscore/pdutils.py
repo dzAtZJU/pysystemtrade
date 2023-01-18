@@ -11,6 +11,7 @@ from copy import copy
 
 from syscore.genutils import flatten_list
 from syscore.dateutils import (
+    RESAMPLE_STR,
     BUSINESS_DAYS_IN_YEAR,
     time_matches,
     CALENDAR_DAYS_IN_YEAR,
@@ -87,7 +88,8 @@ def turnover(x, y, smooth_y_days: int = 250):
 
     """
 
-    daily_x = x.resample("1B").last()
+    # daily_x = x.resample("1B").last()
+    daily_x = x.resample(RESAMPLE_STR).last()
     if isinstance(y, float) or isinstance(y, int):
         daily_y = pd.Series(np.full(daily_x.shape[0], float(y)), daily_x.index)
     else:

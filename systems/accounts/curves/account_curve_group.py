@@ -87,7 +87,8 @@ class accountCurveGroup(accountCurve):
         return accountCurveGroup(
             self.dict_of_account_curves,
             capital=self.capital,
-            frequency=Frequency.BDay,
+            # frequency=Frequency.BDay,
+            frequency=Frequency.Day,
             **kwargs
         )
 

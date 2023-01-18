@@ -128,7 +128,7 @@ class PositionSizing(SystemStage):
 
         return subsystem_position
 
-    def avg_abs_forecast(self) -> float:
+    def avg_abs_forecast(self) -> float:                                                                                                                                                                              
         return self.config.average_absolute_forecast
 
     @property

@@ -16,6 +16,7 @@ from syscore.objects import missing_data, arg_not_supplied
 First some constants
 """
 
+RESAMPLE_STR = '1D'
 CALENDAR_DAYS_IN_YEAR = 365.25
 
 BUSINESS_DAYS_IN_YEAR = 361# 256.0

@@ -2,7 +2,7 @@ import pandas as pd
 import datetime
 from copy import copy
 
-from syscore.dateutils import ROOT_BDAYS_INYEAR
+from syscore.dateutils import ROOT_BDAYS_INYEAR, RESAMPLE_STR
 from syscore.pdutils import (
     fix_weights_vs_position_or_forecast,
     from_dict_of_values_to_df,
@@ -454,7 +454,7 @@ class Portfolios(SystemStage):
 
         # now on same frequency as positions
         # Move to daily for space saving and so smoothing makes sense
-        daily_unsmoothed_instrument_weights = instrument_weights.resample("1B").mean()
+        daily_unsmoothed_instrument_weights = instrument_weights.resample(RESAMPLE_STR).mean()
 
         return daily_unsmoothed_instrument_weights
 

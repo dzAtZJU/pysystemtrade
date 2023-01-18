@@ -128,7 +128,7 @@ forecast_div_mult_estimate:
    ewma_span: 125
    dm_max: 2.5
 #
-use_forecast_weight_estimates: False
+use_forecast_weight_estimates: True
 #
 forecast_cost_estimates:
    use_pooled_costs: False

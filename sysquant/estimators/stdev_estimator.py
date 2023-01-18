@@ -8,7 +8,7 @@ from syscore.pdutils import (
     get_max_index_before_datetime,
 get_row_of_df_aligned_to_weights_as_dict
 )
-from syscore.dateutils import BUSINESS_DAYS_IN_YEAR
+from syscore.dateutils import BUSINESS_DAYS_IN_YEAR, RESAMPLE_STR
 
 from sysquant.fitting_dates import fitDates
 from sysquant.estimators.generic_estimator import (
@@ -50,7 +50,7 @@ class seriesOfStdevEstimates(pd.DataFrame):
     def shocked(self, shock_quantile = .99, roll_years = 10, bfill=True):
         min_periods = int(np.ceil(2 / shock_quantile))
         roll_bus_days = int(roll_years * BUSINESS_DAYS_IN_YEAR)
-        align_daily = self.resample("1B").ffill()
+        align_daily = self.resample(RESAMPLE_STR).ffill()
         shocked = align_daily.rolling(roll_bus_days,
                                       min_periods=min_periods).quantile(shock_quantile)
         if bfill:

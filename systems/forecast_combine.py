@@ -33,7 +33,7 @@ from systems.system_cache import diagnostic, dont_cache, input, output
 from systems.forecasting import Rules
 from systems.forecast_scale_cap import ForecastScaleCap
 
-
+from syscore.pdutils import RESAMPLE_STR
 class ForecastCombine(SystemStage):
     """
     Stage for combining forecasts (already capped and scaled)
@@ -243,7 +243,7 @@ class ForecastCombine(SystemStage):
 
         # Remap to business day frequency so the smoothing makes sense also space saver
         daily_forecast_weights_fixed_to_forecasts_unsmoothed = (
-            forecast_weights_fixed_to_forecasts.resample("1B").mean()
+            forecast_weights_fixed_to_forecasts.resample(RESAMPLE_STR).mean()
         )
 
         return daily_forecast_weights_fixed_to_forecasts_unsmoothed

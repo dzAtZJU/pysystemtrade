@@ -3,6 +3,14 @@ percentage_vol_target: 25
 notional_trading_capital: 100_0000
 base_currency: "USDT"
 trading_rules:
+  mac8:
+     function: systems.provided.rules.ewmac.mac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
   mac4:
      function: systems.provided.rules.ewmac.mac
      data:
@@ -20,6 +28,7 @@ trading_rules:
          Lfast: 4
          Lslow: 16
 forecast_weights:
+     mac8: 0.5
      mac4: 0.5
      ewmac4: 0.5
 forecast_div_multiplier: 1
@@ -33,4 +42,3 @@ instrument_weights:
      # MATIC-USDT-SWAP: 0.04
      # BNB-USDT-SWAP: 0.04
 instrument_div_multiplier: 1
-position_sizing_method: 'none_so_every_trade_cash_all_in'

@@ -65,7 +65,8 @@ class nestedAccountCurveGroup(accountCurveGroup):
         return nestedAccountCurveGroup(
             self.nested_account_curves,
             capital=self.capital,
-            frequency=Frequency.BDay,
+            # frequency=Frequency.BDay,
+            frequency=Frequency.Day,
             **kwargs
         )
 

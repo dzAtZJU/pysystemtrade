@@ -5,7 +5,7 @@ import pandas as pd
 from systems.stage import SystemStage
 from syscore.objects import resolve_function
 from syscore.dateutils import ROOT_BDAYS_INYEAR
-from syscore.pdutils import prices_to_daily_prices
+from syscore.pdutils import prices_to_daily_prices, RESAMPLE_STR
 from systems.system_cache import input, diagnostic, output
 
 from sysdata.sim.futures_sim_data import futuresSimData
@@ -368,6 +368,34 @@ class RawData(SystemStage):
         ).ffill()
 
         return normalised_price_for_asset_class_aligned
+
+    @output()
+    def daily_denominator_price(self, instrument_code: str) -> pd.Series:
+        """
+        Gets daily prices for use with % volatility
+        This won't always be the same as the normal 'price'
+
+        :param instrument_code: Instrument to get prices for
+        :type trading_rules: str
+
+        :returns: Tx1 pd.DataFrame
+
+        KEY OUTPUT
+
+        >>> from systems.tests.testdata import get_test_object_futures
+        >>> from systems.basesystem import System
+        >>> (data, config)=get_test_object_futures()
+        >>> system=System([RawData()], data)
+        >>>
+        >>> system.rawdata.daily_denominator_price("EDOLLAR").ffill().tail(2)
+        2015-12-10    97.8800
+        2015-12-11    97.9875
+        Freq: B, Name: PRICE, dtype: float64
+        """
+        prices = self.get_instrument_raw_carry_data(instrument_code).PRICE
+        daily_prices = prices.resample(RESAMPLE_STR).last()
+
+        return daily_prices
 
 if __name__ == "__main__":
     import doctest
