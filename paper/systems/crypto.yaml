@@ -3,22 +3,46 @@ percentage_vol_target: 25
 notional_trading_capital: 100_0000
 base_currency: "USDT"
 trading_rules:
-  mac8:
-     function: systems.provided.rules.ewmac.mac
-     data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args:
-         Lfast: 8
-         Lslow: 32
-  mac4:
-     function: systems.provided.rules.ewmac.mac
-     data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args:
-         Lfast: 4
-         Lslow: 16
+#   mac32:
+#      function: systems.provided.rules.ewmac.mac
+#      data:
+#          - "rawdata.get_daily_prices"
+#          - "rawdata.daily_returns_volatility"
+#      other_args:
+#          Lfast: 32
+#          Lslow: 128
+#   mac16:
+#      function: systems.provided.rules.ewmac.mac
+#      data:
+#          - "rawdata.get_daily_prices"
+#          - "rawdata.daily_returns_volatility"
+#      other_args:
+#          Lfast: 16
+#          Lslow: 64
+#   mac8:
+#      function: systems.provided.rules.ewmac.mac
+#      data:
+#          - "rawdata.get_daily_prices"
+#          - "rawdata.daily_returns_volatility"
+#      other_args:
+#          Lfast: 8
+#          Lslow: 32
+#   mac4:
+#      function: systems.provided.rules.ewmac.mac
+#      data:
+#          - "rawdata.get_daily_prices"
+#          - "rawdata.daily_returns_volatility"
+#      other_args:
+#          Lfast: 4
+#          Lslow: 16
+#   mac2:
+#      function: systems.provided.rules.ewmac.mac
+#      data:
+#          - "rawdata.get_daily_prices"
+#          - "rawdata.daily_returns_volatility"
+#      other_args:
+#          Lfast: 2
+#          Lslow: 8
   ewmac4:
      function: systems.provided.rules.ewmac.ewmac
      data:
@@ -27,10 +51,10 @@ trading_rules:
      other_args:
          Lfast: 4
          Lslow: 16
-forecast_weights:
-     mac8: 0.5
-     mac4: 0.5
-     ewmac4: 0.5
+# forecast_weights:
+#      mac8: 0.5
+#      mac4: 0.5
+#      ewmac4: 0.5
 forecast_div_multiplier: 1
 instrument_weights:
      BTC-USDT-SWAP: 0.55
