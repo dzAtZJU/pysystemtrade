@@ -122,10 +122,11 @@ class perpetualsSimData(simData):
         ]
 
     def get_rolls_per_year(self, instrument_code: str) -> int:
-        roll_parameters = self.get_roll_parameters(instrument_code)
-        rolls_per_year = roll_parameters.rolls_per_year_in_hold_cycle()
+        # roll_parameters = self.get_roll_parameters(instrument_code)
+        # rolls_per_year = roll_parameters.rolls_per_year_in_hold_cycle()
 
-        return rolls_per_year
+        # return rolls_per_year
+        return 0
 
     def get_raw_cost_data(self, instrument_code: str) -> instrumentCosts:
         """

@@ -12,7 +12,7 @@ from syscore.fileutils import (
     get_resolved_pathname,
 )
 
-datapath = "paper.sysinit.data"
+datapath = "paper.sysinit.data.binance"
 
 barchart_csv_config = ConfigCsvFuturesPrices(
     input_date_index_name="date",

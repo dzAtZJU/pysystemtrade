@@ -122,10 +122,14 @@ class PositionSizing(SystemStage):
         vol_scalar = self.get_volatility_scalar(instrument_code)
         forecast = self.get_combined_forecast(instrument_code)
 
+        vol_scalar.to_csv('{}-vol_scalar.csv'.format(instrument_code))
+        forecast.to_csv('{}-forecast.csv'.format(instrument_code))
+
         vol_scalar = vol_scalar.reindex(forecast.index, method="ffill")
 
         subsystem_position = vol_scalar * forecast / avg_abs_forecast
 
+        subsystem_position.to_csv('{}-subsystem_position.csv'.format(instrument_code))
         return subsystem_position
 
     def avg_abs_forecast(self) -> float:                                                                                                                                                                              

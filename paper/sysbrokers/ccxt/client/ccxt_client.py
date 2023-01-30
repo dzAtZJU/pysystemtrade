@@ -50,8 +50,12 @@ class ccxtClient(object):
         return self._ib_connnection
 
     @property
-    def ib(self) -> Exchange:
-        return self.ib_connection.ccxt
+    def okx(self) -> Exchange:
+        return self.ib_connection.okx
+
+    @property
+    def binance(self) -> Exchange:
+        return self.ib_connection.binance
 
     @property
     def client_id(self) -> int:

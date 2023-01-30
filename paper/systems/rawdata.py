@@ -397,6 +397,9 @@ class RawData(SystemStage):
 
         return daily_prices
 
+    def rolls_per_year(self, instrument_code: str) -> int:
+        return self.parent.data.get_rolls_per_year(instrument_code)
+        
 if __name__ == "__main__":
     import doctest
 

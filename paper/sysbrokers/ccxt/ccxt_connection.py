@@ -29,15 +29,20 @@ class connectionCCXT(object):
         log=logtoscreen("connectionCCXT"),
     ):
         self._log = log
-        self._ccxt = ccxt.okex5({
+        self._okx = ccxt.okex5({
             'apiKey': apiKey,
             'secret': secret,
             'password': password
         })
+        self._binance = ccxt.binanceusdm()
 
     @property
-    def ccxt(self) -> Exchange:
-        return self._ccxt
+    def okx(self) -> Exchange:
+        return self._okx
+    
+    @property
+    def binance(self) -> Exchange:
+        return self._binance
 
     @property
     def log(self):

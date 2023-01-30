@@ -51,6 +51,8 @@ class accountPortfolio(accountInstruments):
             dict_of_pandl_by_instrument, capital=capital, weighted=True
         )
 
+        account_curve.net.to_csv('portfolio.csv')
+        print('portfolio calmar={} sharpe={}'.format(account_curve.net.calmar(), account_curve.net.sharpe()))
         return account_curve
 
     @output()

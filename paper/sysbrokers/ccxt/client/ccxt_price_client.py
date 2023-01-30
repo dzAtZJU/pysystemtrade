@@ -255,9 +255,15 @@ class ccxtPriceClient(ccxtInstrumentsClient):
         #     since = int(isoparse(since).timestamp() * 1000)
 
         dfs = []
+        
+        if instrument_code in ['BNB-USDT']:
+            exchange = self.binance
+            instrument_code = instrument_code.replace('-', '/')
+        else:
+            exchange = self.okx
         while True:
             print(since)
-            candles = self.ib.fetch_ohlcv(instrument_code, timeframe=barSizeSetting, since=since, limit=limit)
+            candles = exchange.fetch_ohlcv(instrument_code, timeframe=barSizeSetting, since=since, limit=limit)
             df = pd.DataFrame(candles, columns=['date', 'OPEN', 'HIGH', 'LOW', 'FINAL', 'VOLUME'])
             if len(df) == 0 or df['date'].iloc[-1] == since:
                 break

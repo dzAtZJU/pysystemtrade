@@ -11,22 +11,6 @@ trading_rules:
 #      other_args:
 #          Lfast: 32
 #          Lslow: 128
-#   mac16:
-#      function: systems.provided.rules.ewmac.mac
-#      data:
-#          - "rawdata.get_daily_prices"
-#          - "rawdata.daily_returns_volatility"
-#      other_args:
-#          Lfast: 16
-#          Lslow: 64
-#   mac8:
-#      function: systems.provided.rules.ewmac.mac
-#      data:
-#          - "rawdata.get_daily_prices"
-#          - "rawdata.daily_returns_volatility"
-#      other_args:
-#          Lfast: 8
-#          Lslow: 32
 #   mac4:
 #      function: systems.provided.rules.ewmac.mac
 #      data:
@@ -43,6 +27,14 @@ trading_rules:
 #      other_args:
 #          Lfast: 2
 #          Lslow: 8
+#   ewmac2:
+#      function: systems.provided.rules.ewmac.ewmac
+#      data:
+#          - "rawdata.get_daily_prices"
+#          - "rawdata.daily_returns_volatility"
+#      other_args:
+#          Lfast: 2
+#          Lslow: 4
   ewmac4:
      function: systems.provided.rules.ewmac.ewmac
      data:
@@ -51,18 +43,25 @@ trading_rules:
      other_args:
          Lfast: 4
          Lslow: 16
+#   ewmac6:
+#      function: systems.provided.rules.ewmac.ewmac
+#      data:
+#          - "rawdata.get_daily_prices"
+#          - "rawdata.daily_returns_volatility"
+#      other_args:
+#          Lfast: 6
+#          Lslow: 24
 # forecast_weights:
-#      mac8: 0.5
-#      mac4: 0.5
+#      ewmac8: 0.5
 #      ewmac4: 0.5
 forecast_div_multiplier: 1
+instruments: [BTC-USDT-SWAP, ETH-USDT-SWAP, BNB-USDT]
 instrument_weights:
-     BTC-USDT-SWAP: 0.55
-     # ETH-USDT-SWAP: 0.3
-     # ADA-USDT-SWAP: 0.05
-     # XRP-USDT-SWAP: 0.05
-     # DOGE-USDT-SWAP: 0.05
-     
-     # MATIC-USDT-SWAP: 0.04
-     # BNB-USDT-SWAP: 0.04
+     BTC-USDT-SWAP: 0.5
+     ETH-USDT-SWAP: 0.25
+     BNB-USDT: 0.25
 instrument_div_multiplier: 1
+# use_instrument_weight_estimates: False
+use_instrument_weight_estimates: False
+use_forecast_weight_estimates: False
+# use_forecast_weight_estimates: True

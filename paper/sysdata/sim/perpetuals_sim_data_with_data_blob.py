@@ -89,3 +89,8 @@ class genericBlobUsingPerpetualsSimData(perpetualsSimData):
         roll_parameters = self.db_roll_parameters.get_roll_parameters(instrument_code)
 
         return roll_parameters
+
+    def _get_fx_data_from_start_date(
+        self, currency1: str, currency2: str, start_date
+    ) -> fxPrices:
+        return fxPrices.create_empty()

@@ -35,6 +35,81 @@ class perpetualsAccount(Account):
     #     return 0.1
 
     @diagnostic(not_pickable=True)
+    def _pandl_for_instrument_with_cash_costs(
+        self,
+        instrument_code: str,
+        positions: pd.Series,
+        delayfill: bool = True,
+        roundpositions: bool = True,
+    ) -> accountCurve:
+
+        if not roundpositions:
+            self.log.warn(
+                "Using roundpositions=False with cash costs may lead to inaccurate costs (fixed costs, eg commissions will be overstated!!!"
+            )
+
+        raw_costs = self.get_raw_cost_data(instrument_code)
+
+        price = self.get_daily_price(instrument_code)
+        value_of_price_point = self.get_value_of_block_price_move(instrument_code)
+
+        capital = self.get_notional_capital()
+
+        vol_normalise_currency_costs = self.config.vol_normalise_currency_costs
+        rolls_per_year = self.get_rolls_per_year(instrument_code)
+
+        pandl_calculator = pandlCalculationWithCashCostsAndFills(
+            price,
+            raw_costs=raw_costs,
+            positions=positions,
+            capital=capital,
+            value_per_point=value_of_price_point,
+            delayfill=delayfill,
+            roundpositions=roundpositions,
+            vol_normalise_currency_costs=vol_normalise_currency_costs,
+            rolls_per_year=rolls_per_year,
+        )
+
+        account_curve = accountCurve(pandl_calculator, weighted=True)
+
+        return account_curve
+
+    @diagnostic(not_pickable=True)
+    def _pandl_for_subsystem_with_cash_costs(
+        self, instrument_code, delayfill=True, roundpositions=True
+    ) -> accountCurve:
+
+        raw_costs = self.get_raw_cost_data(instrument_code)
+        price = self.get_daily_price(instrument_code)
+        positions = self.get_buffered_subsystem_position(instrument_code)
+        positions.to_csv('{}-positions.csv'.format(instrument_code))
+
+        value_of_price_point = self.get_value_of_block_price_move(instrument_code)
+
+        capital = self.get_notional_capital()
+
+        vol_normalise_currency_costs = self.config.vol_normalise_currency_costs
+        rolls_per_year = self.get_rolls_per_year(instrument_code)
+
+        pandl_calculator = pandlCalculationWithCashCostsAndFills(
+            price,
+            raw_costs=raw_costs,
+            positions=positions,
+            capital=capital,
+            value_per_point=value_of_price_point,
+            delayfill=delayfill,
+            roundpositions=roundpositions,
+            vol_normalise_currency_costs=vol_normalise_currency_costs,
+            rolls_per_year=rolls_per_year,
+        )
+
+        account_curve = accountCurve(pandl_calculator)
+
+        account_curve.net.to_csv('{}-net.csv'.format(instrument_code))
+        print('{} calmar={} sharpe={}'.format(instrument_code, account_curve.net.calmar(), account_curve.net.sharpe()))
+        return account_curve
+
+    @diagnostic(not_pickable=True)
     def pandl_for_instrument_forecast(
         self, instrument_code: str, rule_variation_name: str, delayfill: bool = True
     ) -> accountCurve:
@@ -106,48 +181,6 @@ class perpetualsAccount(Account):
     ) -> float:
         return 0.001
 
-    # def _pandl_for_instrument_with_cash_costs(
-    #     self,
-    #     instrument_code: str,
-    #     positions: pd.Series,
-    #     delayfill: bool = True,
-    #     roundpositions: bool = True,
-    # ) -> accountCurve:
-
-    #     if not roundpositions:
-    #         self.log.warn(
-    #             "Using roundpositions=False with cash costs may lead to inaccurate costs (fixed costs, eg commissions will be overstated!!!"
-    #         )
-
-    #     value_of_price_point = self.get_value_of_block_price_move(instrument_code)
-    #     capital = self.get_notional_capital()
-
-    #     instrument_strategy = instrumentStrategy('DMA_LONG_1_D', instrument_code)
-    #     fills = csvCTSEStrategyHistoricOrdersData().get_fills_history_for_instrument_strategy(instrument_strategy)
-
-    #     price = self.get_daily_price(instrument_code)
-    #     price = merge_fill_prices_with_prices(price, fills)
-    #     price = price.shift(-1)
-
-    #     pandl_calculator = pandlCalculationWithCashCostsAndFills(
-    #         price,
-    #         raw_costs=instrumentCosts(),
-    #         positions=positions,
-    #         capital=capital,
-    #         value_per_point=value_of_price_point,
-    #         delayfill=delayfill,
-    #         roundpositions=roundpositions,
-    #         rolls_per_year=1,
-    #     )
-
-    #     account_curve = accountCurve(pandl_calculator, weighted=True)
-
-    #     return account_curve
-
-    # def fills(self, instrument_code):
-    #     instrument_strategy = instrumentStrategy('DMA_LONG_1_D', instrument_code)
-    #     fills = csvCTSEStrategyHistoricOrdersData().get_fills_history_for_instrument_strategy(instrument_strategy)
-    #     return fills
 
 ARBITRARY_FORECAST_CAPITAL = 100
 ARBITRARY_FORECAST_ANNUAL_RISK_TARGET_PERCENTAGE = 0.16
