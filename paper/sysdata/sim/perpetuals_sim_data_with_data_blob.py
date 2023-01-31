@@ -38,7 +38,8 @@ class genericBlobUsingPerpetualsSimData(perpetualsSimData):
         return self.data.db_futures_instrument
 
     def get_instrument_list(self):
-        return self.db_perpetuals_prices_data.get_list_of_instruments()
+            ins_list = self.db_perpetuals_prices_data.get_list_of_instruments()
+            return [ins.split('/')[1] for ins in ins_list]
 
     def get_instrument_asset_classes(self) -> assetClassesAndInstruments:
         all_instrument_data = self.get_all_instrument_data_as_df()

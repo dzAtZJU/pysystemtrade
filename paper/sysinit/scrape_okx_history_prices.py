@@ -157,8 +157,10 @@ if __name__ == '__main__':
     from syscore.fileutils import get_filename_for_package
     import ccxt
 
-    exchange = ccxt.binanceusdm()
-    symbol = 'BNB/USDT'
+    # exchange = ccxt.binanceusdm()
+    exchange = ccxt.okex5()
+    # symbol = 'BNB/USDT'
+    symbol = 'BTC-USDT-SWAP'
     timeframe = ('1h', 'Hour')
     history = tmp('2020-01-01T09:00+08', timeframe[0], symbol, exchange)
-    history.to_csv(get_filename_for_package('{}.{}_{}.csv'.format('paper.sysinit.data.binance', timeframe[1], symbol.replace('/', '-'))))
+    history.to_csv(get_filename_for_package('{}.{}_{}.csv'.format('paper.sysinit.data.okx', timeframe[1], symbol.replace('/', '-'))))

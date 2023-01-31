@@ -30,7 +30,7 @@ class arcticPerpetualsPricesData(perpetualsPriceData):
         return self._arctic_connection
 
     def get_list_of_instruments(self) -> list:
-        return self.arctic.get_keynames()
+        return self.arctic_connection.get_keynames()
      
     def _get_spot_prices_without_checking(
         self, instrument_code: str

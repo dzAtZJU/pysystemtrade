@@ -7,7 +7,7 @@ A system consists of a system, plus a config
 from syscore.objects import arg_not_supplied
 
 from sysdata.config.configdata import Config
-
+from sysproduction.data.control_process import get_strategy_class_object_config
 from systems.forecasting import Rules
 from systems.basesystem import System
 from systems.forecast_combine import ForecastCombine
@@ -16,6 +16,7 @@ from paper.systems.rawdata import RawData
 from paper.systems.positionsizing import PositionSizing
 from systems.portfolio import Portfolios
 from paper.systems.accounts.accounts_stage import perpetualsAccount
+from sysproduction.data.sim_data import get_sim_data_object_for_production
 
 
 def perpetuals_system(
@@ -60,8 +61,11 @@ def perpetuals_system(
     2015-04-22  0.350892
     """
 
-    # if data is arg_not_supplied:
-    #     data = csvFuturesSimData()
+    if data is arg_not_supplied:
+        data = get_sim_data_object_for_production()
+
+    if config is arg_not_supplied:
+        config = Config('paper.systems.crypto.yaml')
 
     rules = Rules(trading_rules)
 
@@ -85,6 +89,4 @@ def perpetuals_system(
 
 
 if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
+    perpetuals_system()
