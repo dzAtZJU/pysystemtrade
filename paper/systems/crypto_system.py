@@ -65,8 +65,10 @@ def perpetuals_system(
         data = get_sim_data_object_for_production()
 
     if config is arg_not_supplied:
-        config = Config('paper.systems.crypto.yaml')
-
+        config = Config('paper.systems.crypto_v0.yaml')
+    else:
+        config = Config(config)
+        
     rules = Rules(trading_rules)
 
     system = System(
@@ -89,4 +91,7 @@ def perpetuals_system(
 
 
 if __name__ == "__main__":
-    perpetuals_system()
+    ins = 'BTC-USDT-SWAP'
+    system = perpetuals_system(config='paper.systems.crypto_v1.yaml')
+    # system.combForecast.get_raw_monthly_forecast_weights(ins)
+    curve = system.accounts.pandl_for_subsystem(ins)

@@ -250,7 +250,6 @@ class Portfolios(SystemStage):
         )
 
         # subsystem frequency
-        notional_position_without_idm.to_csv('{}-position_without_idm.csv'.format(instrument_code))
         return notional_position_without_idm
 
     # IDM
@@ -427,8 +426,6 @@ class Portfolios(SystemStage):
         normalised_smoothed_instrument_weights = weights_sum_to_one(smoothed_instrument_weights)
 
         # daily
-
-        normalised_smoothed_instrument_weights.to_csv('weights.csv')
         return normalised_smoothed_instrument_weights
 
     @diagnostic()

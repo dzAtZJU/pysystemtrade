@@ -82,7 +82,6 @@ class perpetualsAccount(Account):
         raw_costs = self.get_raw_cost_data(instrument_code)
         price = self.get_daily_price(instrument_code)
         positions = self.get_buffered_subsystem_position(instrument_code)
-        positions.to_csv('{}-positions.csv'.format(instrument_code))
 
         value_of_price_point = self.get_value_of_block_price_move(instrument_code)
 
@@ -105,8 +104,6 @@ class perpetualsAccount(Account):
 
         account_curve = accountCurve(pandl_calculator)
 
-        account_curve.net.to_csv('{}-net.csv'.format(instrument_code))
-        print('{} calmar={} sharpe={}'.format(instrument_code, account_curve.net.calmar(), account_curve.net.sharpe()))
         return account_curve
 
     @diagnostic(not_pickable=True)

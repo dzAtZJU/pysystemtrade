@@ -1,0 +1,21 @@
+#YAML
+use_instrument_weight_estimates: False
+use_forecast_weight_estimates: False
+
+percentage_vol_target: 25
+notional_trading_capital: 1_000
+
+base_currency: "USDT"
+trading_rules:
+  ewmac4:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 4
+         Lslow: 16
+forecast_div_multiplier: 1
+instruments: [BTC-USDT-SWAP]
+instrument_div_multiplier: 1
+
