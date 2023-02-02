@@ -66,18 +66,18 @@ production_capital_method: 'full'
 #
 # Raw data
 #
-volatility_calculation:
-  func: "sysquant.estimators.vol.simple_vol_calc"
-  days: 25
-  min_periods: 10
-  
 # volatility_calculation:
-#   func: "sysquant.estimators.vol.mixed_vol_calc"
-#   days: 35
+#   func: "sysquant.estimators.vol.simple_vol_calc"
+#   days: 25
 #   min_periods: 10
-#   slow_vol_years: 10
-#   proportion_of_slow_vol: 0.3
-#   vol_abs_min: 0.0000000001
+  
+volatility_calculation:
+  func: "sysquant.estimators.vol.mixed_vol_calc"
+  days: 35
+  min_periods: 10
+  slow_vol_years: 10
+  proportion_of_slow_vol: 0.3
+  vol_abs_min: 0.0000000001
 #
 # forecast capping and scaling
 # fixed values

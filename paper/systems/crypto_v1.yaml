@@ -3,7 +3,7 @@ use_instrument_weight_estimates: False
 use_forecast_weight_estimates: False
 
 percentage_vol_target: 25
-notional_trading_capital: 30_000
+notional_trading_capital: 10_000
 base_currency: "USDT"
 
 trading_rules:
