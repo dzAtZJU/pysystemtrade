@@ -14,7 +14,7 @@ def exchange(exchange_id):
     exchange = exchange_class()
     return exchange
         
-def _tmp(since, symbol, timeframe, exhcnage: Exchange):
+def fetch_once(since, symbol, timeframe, exhcnage: Exchange):
     if isinstance(since, str):
         since = int(isoparse(since).timestamp() * 1000)
     candles = exhcnage.fetch_ohlcv(symbol, timeframe=timeframe, since=since)
