@@ -1,6 +1,8 @@
 #YAML
 use_instrument_weight_estimates: False
 use_forecast_weight_estimates: False
+use_forecast_scale_estimates: True
+
 
 percentage_vol_target: 50
 notional_trading_capital: 1_500
@@ -23,42 +25,41 @@ trading_rules:
      other_args:
          Lfast: 6
          Lslow: 24
-instruments: [BTC-USDT-SWAP,  ETH-USDT-SWAP, DOGE-USDT-SWAP] # BNB-USDT, XRP-USDT-SWAP, ADA-USDT-SWAP, MATIC-USDT-SWAP, DOGE-USDT-SWAP]
+  breakout10:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+        lookback: 10
+
+instruments: [BTC-USDT-SWAP,  ETH-USDT-SWAP, DOGE-USDT-SWAP, BNB-USDT, XRP-USDT-SWAP, ADA-USDT-SWAP]
 instrument_div_multiplier: 1
 instrument_weights:
-  BTC-USDT-SWAP: 0.5
-  ETH-USDT-SWAP: 0.5
-  DOGE-USDT-SWAP: 0
-  # BNB-USDT: 0.1
-  # XRP-USDT-SWAP: 0.1
-  # ADA-USDT-SWAP: 0.1
-  # MATIC-USDT-SWAP: 0
-  # DOGE-USDT-SWAP: 0.1
+  BTC-USDT-SWAP: 1
+  ETH-USDT-SWAP: 1
+  DOGE-USDT-SWAP: 1
+  BNB-USDT: 1
+  XRP-USDT-SWAP: 1
+  ADA-USDT-SWAP: 1
 forecast_weights:
   BTC-USDT-SWAP:
-    ewmac4: 0.75
-    ewmac6: 0.25
+    ewmac4: 0
+    ewmac6: 0
   ETH-USDT-SWAP:
     ewmac4: 0.75
     ewmac6: 0.25
   DOGE-USDT-SWAP:
     ewmac4: 0
     ewmac6: 0
-  # BNB-USDT:
-  #   ewmac4: 0.75
-  #   ewmac6: 0.25
-  # XRP-USDT-SWAP:
-  #   ewmac4: 0.75
-  #   ewmac6: 0.25
-  # ADA-USDT-SWAP:
-  #   ewmac4: 0.75
-  #   ewmac6: 0.25
-  # MATIC-USDT-SWAP:
-  #   ewmac4: 0.75
-  #   ewmac6: 0.25
-  # DOGE-USDT-SWAP:
-  #   ewmac4: 0.75
-  #   ewmac6: 0.25
+  BNB-USDT:
+    ewmac4: 0.75
+    ewmac6: 0.25
+  XRP-USDT-SWAP:
+    ewmac4: 0.75
+    ewmac6: 0.25
+  ADA-USDT-SWAP:
+    ewmac4: 0.75
+    ewmac6: 0.25
 forecast_div_multiplier: 1
 
 # instrument_weight_estimate:
