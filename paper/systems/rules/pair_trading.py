@@ -1,6 +1,8 @@
 import numpy as np
 
-def t1(prices):
-    buy = prices.rolling(7).min() == prices
-    sell = prices.rolling(7).max() == prices
-    return (buy * 1 + sell * 1)
+def sd(prices, prices_for_pair, lookback=10):
+    sd = si(prices_for_pair, lookback) - si(prices, lookback)
+    return sd
+
+def si(prices, lookback):
+    return (prices - prices.rolling(lookback).min()) / (prices.rolling(lookback).max() - prices.rolling(lookback).min())

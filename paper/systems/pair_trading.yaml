@@ -9,89 +9,21 @@ notional_trading_capital: 1_500
 
 base_currency: "USDT"
 trading_rules:
-  ewmac4:
-     function: systems.provided.rules.ewmac.ewmac
+  sd:
+     function: paper.systems.rules.pair_trading.sd
      data:
          - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args:
-         Lfast: 4
-         Lslow: 16
-  ewmac6:
-     function: systems.provided.rules.ewmac.ewmac
-     data:
-         - "rawdata.get_daily_prices"
-         - "rawdata.daily_returns_volatility"
-     other_args:
-         Lfast: 6
-         Lslow: 24
-  breakout10:
-     function: systems.provided.rules.breakout.breakout
-     data:
-         - "rawdata.get_daily_prices"
+         - "rawdata.pair_daily_prices_for"
      other_args:
         lookback: 10
 
-instruments: [BTC-USDT-SWAP,  ETH-USDT-SWAP, DOGE-USDT-SWAP, BNB-USDT, XRP-USDT-SWAP, ADA-USDT-SWAP]
+instruments: [BTC-USDT-SWAP,  ETH-USDT-SWAP]
 instrument_div_multiplier: 1
 instrument_weights:
-  BTC-USDT-SWAP: 1
-  ETH-USDT-SWAP: 1
-  DOGE-USDT-SWAP: 1
-  BNB-USDT: 1
-  XRP-USDT-SWAP: 1
-  ADA-USDT-SWAP: 1
+  BTC-USDT-SWAP: 0.5
+  ETH-USDT-SWAP: 0.5
 forecast_weights:
   BTC-USDT-SWAP:
-    ewmac4: 0
-    ewmac6: 0
+    sd: 1
   ETH-USDT-SWAP:
-    ewmac4: 0.75
-    ewmac6: 0.25
-  DOGE-USDT-SWAP:
-    ewmac4: 0
-    ewmac6: 0
-  BNB-USDT:
-    ewmac4: 0.75
-    ewmac6: 0.25
-  XRP-USDT-SWAP:
-    ewmac4: 0.75
-    ewmac6: 0.25
-  ADA-USDT-SWAP:
-    ewmac4: 0.75
-    ewmac6: 0.25
-forecast_div_multiplier: 1
-
-# instrument_weight_estimate:
-#    func: sysquant.optimisation.generic_optimiser.genericOptimiser
-#    method: handcraft
-#    frequency: "W"
-#    equalise_gross: False
-#    cost_multiplier: 1.0
-#    apply_cost_weight: False
-#    date_method: "expanding"
-#    rollyears: 20
-#    cleaning: True
-#    equalise_SR: False
-#    ann_target_SR: 0.5
-#    equalise_vols: True
-#    shrinkage_mean: 1.00
-#    shrinkage_corr: 0.50
-#    monte_runs: 100
-#    correlation_estimate:
-#      func: sysquant.estimators.correlation_estimator.correlationEstimator
-#      using_exponent: True
-#      ew_lookback: 500000
-#      min_periods: 10
-#      floor_at_zero: True
-#      cleaning: False
-#    mean_estimate:
-#      func: sysquant.estimators.mean_estimator.meanEstimator
-#      using_exponent: True
-#      ew_lookback: 50000
-#      min_periods: 5
-#    vol_estimate:
-#      func: sysquant.estimators.stdev_estimator.stdevEstimator
-#      using_exponent: True
-#      ew_lookback: 50000
-#      min_periods: 5
+    sd: 1

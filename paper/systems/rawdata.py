@@ -202,6 +202,12 @@ class RawData(SystemStage):
         return perc_returns
 
     @output()
+    def annualised_percentage_volatility(self, instrument_code: str) -> pd.Series:
+        daily_percentage_volatility = self.get_daily_percentage_volatility(instrument_code)
+
+        return daily_percentage_volatility * ROOT_BDAYS_INYEAR
+
+    @output()
     def get_daily_percentage_volatility(self, instrument_code: str) -> pd.Series:
         """
         Get percentage returns normalised by recent vol
@@ -344,6 +350,15 @@ class RawData(SystemStage):
         norm_price = self._daily_vol_normalised_price_for_list_of_instruments(instruments_in_asset_class)
 
         return norm_price
+
+    @output()
+    def pair_daily_prices_for(self, instrument_code: str) -> pd.Series:
+        pair_dict = {
+            'BTC-USDT-SWAP': 'ETH-USDT-SWAP' ,
+            'ETH-USDT-SWAP' : 'BTC-USDT-SWAP'
+        }
+        pair = pair_dict[instrument_code]
+        return self.get_daily_prices(pair)
 
     @output()
     def normalised_price_for_asset_class(self, instrument_code: str) -> pd.Series:
