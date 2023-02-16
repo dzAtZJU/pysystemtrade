@@ -3,7 +3,7 @@ from copy import copy
 import numpy as np
 import pandas as pd
 
-from syscore.merge_data import full_merge_of_existing_series
+from syscore.pandas.full_merge_with_replacement import full_merge_of_existing_series
 from sysobjects.dict_of_named_futures_per_contract_prices import (
     price_column_names,
     contract_column_names,

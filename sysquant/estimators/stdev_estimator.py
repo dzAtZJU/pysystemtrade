@@ -55,16 +55,10 @@ class seriesOfStdevEstimates(pd.DataFrame):
     def shocked(self, shock_quantile=0.99, roll_years=10, bfill=True):
         min_periods = int(np.ceil(2 / shock_quantile))
         roll_bus_days = int(roll_years * BUSINESS_DAYS_IN_YEAR)
-<<<<<<< HEAD
         align_daily = self.resample(RESAMPLE_STR).ffill()
-        shocked = align_daily.rolling(roll_bus_days,
-                                      min_periods=min_periods).quantile(shock_quantile)
-=======
-        align_daily = self.resample("1B").ffill()
         shocked = align_daily.rolling(roll_bus_days, min_periods=min_periods).quantile(
             shock_quantile
         )
->>>>>>> @{-1}
         if bfill:
             shocked = shocked.bfill()
         align_shocked = shocked.reindex(self.index).ffill()

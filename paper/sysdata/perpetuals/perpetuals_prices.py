@@ -1,7 +1,7 @@
 from syscore.exceptions import missingData
-from syscore.objects import missing_data, failure
+from syscore.constants import missing_data, failure
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ, MIXED_FREQ
-from syscore.merge_data import spike_in_data
+from syscore.pandas.merge_data_keeping_past_data import SPIKE_IN_DATA
 
 from sysdata.base_data import baseData
 
@@ -374,7 +374,7 @@ class perpetualsPriceData(baseData):
             max_price_spike = max_price_spike
         )
 
-        if merged_prices is spike_in_data:
+        if merged_prices is SPIKE_IN_DATA:
             self.log.msg(
                 "Price has moved too much - will need to manually check - no price update done"
             )

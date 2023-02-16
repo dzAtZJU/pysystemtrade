@@ -1,7 +1,8 @@
 from copy import copy
 
 from paper.sysbrokers.ccxt.ccxt_connection import connectionCCXT, get_broker_account
-from syscore.objects import arg_not_supplied, get_class_name
+from syscore.constants import arg_not_supplied
+from syscore.objects import get_class_name
 from syscore.text import camel_case_split
 from sysdata.config.production_config import get_production_config, Config
 from sysdata.mongodb.mongo_connection import mongoDb

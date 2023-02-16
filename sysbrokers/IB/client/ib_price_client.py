@@ -225,11 +225,13 @@ class ibPriceClient(ibContractsClient):
         :return: datetime.datetime
         """
 
-        timestamp = self._adjust_ib_time_to_local(timestamp_ib)
+        # timestamp = self._adjust_ib_time_to_local(timestamp_ib)
 
-        adjusted_ts = replace_midnight_with_notional_closing_time(timestamp)
+        # adjusted_ts = replace_midnight_with_notional_closing_time(timestamp)
 
-        return adjusted_ts
+        # return adjusted_ts
+
+        return timestamp_ib
 
     def _adjust_ib_time_to_local(self, timestamp_ib) -> datetime.datetime:
 

@@ -12,7 +12,6 @@ from sysbrokers.IB.ib_positions import resolveBS_for_list
 from syscore.exceptions import missingContract, missingData
 
 from syscore.dateutils import (
-    adjust_timestamp_to_include_notional_close_and_time_offset,
     strip_timezone_fromdatetime,
     Frequency,
     DAILY_PRICE_FREQ,

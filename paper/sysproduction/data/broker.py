@@ -13,12 +13,12 @@ from sysbrokers.broker_fx_prices_data import brokerFxPricesData
 from sysbrokers.broker_instrument_data import brokerFuturesInstrumentData
 from syscore.exceptions import missingContract, missingData
 
-from syscore.objects import (
+from syscore.constants import (
     arg_not_supplied,
-    missing_order,
     missing_data,
     market_closed
 )
+from sysexecution.orders.named_order_objects import missing_order
 from syscore.dateutils import Frequency, DAILY_PRICE_FREQ
 from sysobjects.production.trading_hours.trading_hours import listOfTradingHours
 

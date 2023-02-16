@@ -36,7 +36,7 @@ from systems.system_cache import diagnostic, dont_cache, input, output
 from systems.forecasting import Rules
 from systems.forecast_scale_cap import ForecastScaleCap
 
-from syscore.pdutils import RESAMPLE_STR
+from syscore.dateutils import RESAMPLE_STR
 class ForecastCombine(SystemStage):
     """
     Stage for combining forecasts (already capped and scaled)

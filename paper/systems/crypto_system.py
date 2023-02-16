@@ -4,7 +4,7 @@ This is a futures system
 A system consists of a system, plus a config
 
 """
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 
 from sysdata.config.configdata import Config
 from sysproduction.data.control_process import get_strategy_class_object_config

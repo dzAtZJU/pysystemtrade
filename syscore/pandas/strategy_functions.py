@@ -6,6 +6,7 @@ import pandas as pd
 
 from syscore.dateutils import BUSINESS_DAYS_IN_YEAR, SECONDS_IN_YEAR
 from syscore.pandas.pdutils import uniquets
+from syscore.pandas.frequency import resample_prices_to_business_day_index
 
 
 def turnover(
@@ -18,7 +19,7 @@ def turnover(
 
     """
 
-    daily_x = x.resample("1B").last()
+    daily_x = resample_prices_to_business_day_index(x)
     if isinstance(y, float) or isinstance(y, int):
         daily_y = pd.Series(np.full(daily_x.shape[0], float(y)), daily_x.index)
     else:

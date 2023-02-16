@@ -1,8 +1,4 @@
 from systems.accounts.accounts_stage import Account
-from ctse.sysdata.csv_ctse_historic_orders import (
-    csvCTSEStrategyHistoricOrdersData
-)
-from sysobjects.instruments import instrumentCosts
 from systems.accounts.pandl_calculators.pandl_using_fills import (
         pandlCalculationWithFills,
         merge_fill_prices_with_prices
@@ -14,8 +10,7 @@ from sysobjects.production.tradeable_object import instrumentStrategy
 import pandas as pd
 
 from syscore.dateutils import ROOT_BDAYS_INYEAR
-from syscore.objects import arg_not_supplied
-from syscore.pdutils import sum_series
+from syscore.constants import arg_not_supplied
 from sysquant.estimators.vol import robust_daily_vol_given_price
 
 from systems.system_cache import diagnostic

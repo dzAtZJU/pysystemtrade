@@ -160,8 +160,8 @@ def sumup_business_days_over_pd_series_without_double_counting_of_closing_data(
 
 
 def resample_prices_to_business_day_index(x):
-    return x.resample("1B").last()
-
+    # return x.resample("1B").last()
+    return x.resample("1D").apply(lambda x: x[x.index.hour == 17].iloc[-1] if len(x[x.index.hour == 17]) > 0 else np.nan)
 
 def how_many_times_a_year_is_pd_frequency(frequency: str) -> float:
     DICT_OF_FREQ = {

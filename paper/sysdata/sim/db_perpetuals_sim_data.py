@@ -3,7 +3,7 @@ Get data from mongo and arctic used for futures trading
 
 """
 
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 
 from paper.sysdata.arctic.arctic_perpetual_prices import arcticPerpetualsPricesData
 from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData

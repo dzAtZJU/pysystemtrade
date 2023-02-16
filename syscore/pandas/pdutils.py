@@ -88,6 +88,7 @@ def pd_readcsv(
     input_column_mapping: Union[dict, named_object] = arg_not_supplied,
     skiprows: int = 0,
     skipfooter: int = 0,
+    encoding=None
 ) -> pd.DataFrame:
     """
     Reads a pandas data frame, with time index labelled
@@ -103,7 +104,7 @@ def pd_readcsv(
 
     """
 
-    df = pd.read_csv(filename, skiprows=skiprows, skipfooter=skipfooter)
+    df = pd.read_csv(filename, skiprows=skiprows, skipfooter=skipfooter, encoding=encoding)
 
     ## Add time index as index
     df.index = pd.to_datetime(df[date_index_name], format=date_format).values
