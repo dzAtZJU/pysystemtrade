@@ -1,6 +1,8 @@
 import pandas as pd
 
-from syscore.merge_data import merge_data_series_with_label_column
+from syscore.pandas.merge_data_with_label_column import (
+    merge_data_series_with_label_column,
+)
 from sysobjects.contract_dates_and_expiries import listOfContractDateStr
 
 ## CHECK IF ALL THESE ARE NEEDED...
@@ -22,7 +24,6 @@ contract_column_names = dict(
     [(key, contract_name_from_column_name(key)) for key in list_of_price_column_names]
 )
 list_of_contract_column_names = list(contract_column_names.values())
-
 
 
 class dictNamedFuturesContractFinalPrices(dict):
@@ -178,10 +179,11 @@ def _merge_futures_contract_final_prices_with_contract_id(
     price_column_name = original_data.price_column_name
     contract_column_name = original_data.contract_column_name
 
-    col_names_for_merger = dict(data=price_column_name, label=contract_column_name)
-
     merged_data_as_pd = merge_data_series_with_label_column(
-        original_data, new_data, col_names=col_names_for_merger
+        original_data,
+        new_data,
+        data_column=price_column_name,
+        label_column=contract_column_name,
     )
 
     merged_data = futuresNamedContractFinalPricesWithContractID(

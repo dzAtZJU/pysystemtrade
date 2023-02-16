@@ -1,4 +1,4 @@
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
 from sysquant.estimators.vol import robust_vol_calc
 from systems.provided.rules.ewmac import ewmac_forecast_with_defaults as ewmac
@@ -17,7 +17,6 @@ from systems.provided.example.simplesystem import simplesystem
 from systems.provided.futures_chapter15.basesystem import (
     futures_system as base_futures_system,
 )
-
 
 
 @pytest.fixture()
@@ -51,6 +50,7 @@ def my_config(ewmac_8, ewmac_32):
     my_config = Config()
     my_config.trading_rules = dict(ewmac8=ewmac_8, ewmac32=ewmac_32)
     my_config.instruments = ["US10", "EDOLLAR", "CORN", "SP500"]
+    my_config.notional_trading_capital = 1000000
     my_config.risk_overlay = arg_not_supplied
     my_config.exclude_instrument_lists = dict(
         ignore_instruments=["MILK"],

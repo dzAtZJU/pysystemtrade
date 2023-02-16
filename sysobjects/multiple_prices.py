@@ -1,4 +1,4 @@
-from syscore.objects import missing_data
+from syscore.constants import missing_data
 from dataclasses import dataclass
 import datetime as datetime
 from copy import copy
@@ -114,10 +114,9 @@ class futuresMultiplePrices(pd.DataFrame):
     def inverse(self):
         new_version = copy(self)
         for colname in list_of_price_column_names:
-            new_version[colname] = 1/self[colname]
+            new_version[colname] = 1 / self[colname]
 
         return futuresMultiplePrices(new_version)
-
 
     def current_contract_dict(self) -> setOfNamedContracts:
         if len(self) == 0:

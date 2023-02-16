@@ -1,4 +1,4 @@
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 from sysdata.data_blob import dataBlob
 
 from sysproduction.reporting.api import reportingApi
@@ -56,5 +56,5 @@ def pandl_report(
     return formatted_output
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pandl_report()

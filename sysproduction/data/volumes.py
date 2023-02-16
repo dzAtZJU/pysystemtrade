@@ -1,6 +1,6 @@
 import datetime as datetime
 import pandas as pd
-from syscore.objects import missing_data
+from syscore.constants import missing_data
 from sysdata.arctic.arctic_futures_per_contract_prices import (
     arcticFuturesContractPriceData,
 )
@@ -70,8 +70,10 @@ class diagVolumes(productionDataLayerGeneric):
         return final_volume
 
     def get_daily_volumes_for_contract(self, contract: futuresContract) -> pd.Series:
-        price_data = self.db_futures_contract_price_data.get_merged_prices_for_contract_object(
-            contract
+        price_data = (
+            self.db_futures_contract_price_data.get_merged_prices_for_contract_object(
+                contract
+            )
         )
 
         if len(price_data) == 0:

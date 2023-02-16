@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from syscore.objects import arg_not_supplied, named_object
+from syscore.constants import named_object, arg_not_supplied
+
 
 @dataclass()
 class SimpleOrder:
@@ -16,13 +17,15 @@ class SimpleOrder:
 
     @property
     def is_zero_order(self) -> bool:
-        return self.quantity==0
+        return self.quantity == 0
 
     @classmethod
     def zero_order(cls):
-        return cls(quantity = 0)
+        return cls(quantity=0)
+
 
 zero_order = SimpleOrder.zero_order()
+
 
 class ListOfSimpleOrders(list):
     def remove_zero_orders(self):

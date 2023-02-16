@@ -2,20 +2,18 @@ from copy import copy
 import datetime
 import pandas as pd
 
-from syscore.objects import arg_not_supplied, failure, missing_data
-from syscore.pdutils import uniquets
+from syscore.exceptions import missingData
+from syscore.constants import arg_not_supplied, failure
+from syscore.pandas.pdutils import uniquets
 
 from sysdata.data_blob import dataBlob
 from sysdata.production.capital import capitalEntry, capitalForStrategy
-from sysdata.production.timed_storage import (
-    listOfEntriesData
-)
+from sysdata.production.timed_storage import listOfEntriesData
 
 from sysobjects.production.capital import (
     LIST_OF_COMPOUND_METHODS,
     totalCapitalUpdater,
 )
-
 
 
 ## All capital is stored by strategy, but some 'strategies' actually relate to the total global account
@@ -85,8 +83,6 @@ class capitalData(listOfEntriesData):
 
     def get_current_capital_for_strategy(self, strategy_name: str) -> float:
         current_capital_entry = self.get_last_entry_for_strategy(strategy_name)
-        if current_capital_entry is missing_data:
-            return missing_data
 
         capital_value = current_capital_entry.capital_value
 
@@ -96,9 +92,6 @@ class capitalData(listOfEntriesData):
         self, strategy_name: str
     ) -> datetime.datetime:
         current_capital_entry = self.get_last_entry_for_strategy(strategy_name)
-        if current_capital_entry is missing_data:
-            return missing_data
-
         entry_date = current_capital_entry.date
 
         return entry_date
@@ -110,9 +103,9 @@ class capitalData(listOfEntriesData):
         return current_capital_entry
 
     def update_broker_account_value(
-        self, new_capital_value: float,
-            date: datetime.datetime = arg_not_supplied,
-
+        self,
+        new_capital_value: float,
+        date: datetime.datetime = arg_not_supplied,
     ):
         ## Update account value but also propogate
         if date is arg_not_supplied:
@@ -121,7 +114,6 @@ class capitalData(listOfEntriesData):
         self.update_capital_value_for_strategy(
             BROKER_ACCOUNT_VALUE, new_capital_value, date=date
         )
-
 
     def update_profit_and_loss_account(
         self, new_capital_value: float, date: datetime.datetime = arg_not_supplied
@@ -235,8 +227,11 @@ class capitalData(listOfEntriesData):
     ):
         have_capital_to_delete = True
         while have_capital_to_delete:
-            last_date_in_data = self.get_date_of_last_entry_for_strategy(strategy_name)
-            if last_date_in_data is missing_data:
+            try:
+                last_date_in_data = self.get_date_of_last_entry_for_strategy(
+                    strategy_name
+                )
+            except missingData:
                 ## gone to the start, nothing left
                 break
             if last_date_in_data < start_date:
@@ -246,6 +241,7 @@ class capitalData(listOfEntriesData):
                 self.delete_last_capital_for_strategy(
                     strategy_name, are_you_sure=are_you_sure
                 )
+
 
 from sysdata.mongodb.mongo_timed_storage import mongoListOfEntriesData
 
@@ -266,7 +262,6 @@ class mongoCapitalData(capitalData, mongoListOfEntriesData):
     @property
     def _data_name(self):
         return "mongoStrategyCapitalData"
-
 
 
 class totalCapitalCalculationData(object):
@@ -339,7 +334,6 @@ class totalCapitalCalculationData(object):
     def get_total_capital(self) -> pd.Series:
         return self.capital_data.get_total_capital_pd_series()
 
-
     def get_profit_and_loss_account(self) -> pd.Series():
         return self.capital_data.get_profit_and_loss_account_pd_series()
 
@@ -354,14 +348,6 @@ class totalCapitalCalculationData(object):
         max_capital = self.get_maximum_account()
         acc_pandl = self.get_profit_and_loss_account()
         broker_acc = self.get_broker_account()
-
-        if (
-            total_capital is missing_data
-            or max_capital is missing_data
-            or acc_pandl is missing_data
-            or broker_acc is missing_data
-        ):
-            return missing_data
 
         all_capital = pd.concat(
             [total_capital, max_capital, acc_pandl, broker_acc], axis=1
@@ -424,8 +410,9 @@ class totalCapitalCalculationData(object):
     def _get_prev_broker_account_value_create_if_no_data(
         self, new_broker_account_value: float
     ) -> float:
-        prev_broker_account_value = self.capital_data.get_broker_account_value()
-        if prev_broker_account_value is missing_data:
+        try:
+            prev_broker_account_value = self.capital_data.get_broker_account_value()
+        except missingData:
             # No previous capital, need to set everything up
             self.create_initial_capital(
                 new_broker_account_value, are_you_really_sure=True
@@ -472,19 +459,20 @@ class totalCapitalCalculationData(object):
         :return: None
         """
 
-        prev_broker_account_value = self.capital_data.get_broker_account_value()
-        if prev_broker_account_value is missing_data:
+        try:
+            prev_broker_account_value = self.capital_data.get_broker_account_value()
+        except missingData:
             self._capital_data.log.warn(
                 "Can't apply a delta to broker account value, since no value in data"
             )
+            raise
 
         broker_account_value = prev_broker_account_value + delta_value
 
         # Update broker account value
-        self.modify_account_values(broker_account_value = broker_account_value,
-                                   propagate=True, are_you_sure=True)
-
-
+        self.modify_account_values(
+            broker_account_value=broker_account_value, propagate=True, are_you_sure=True
+        )
 
     def modify_account_values(
         self,
@@ -494,7 +482,7 @@ class totalCapitalCalculationData(object):
         acc_pandl: float = arg_not_supplied,
         date: datetime.datetime = arg_not_supplied,
         are_you_sure: bool = False,
-        propagate: bool = True
+        propagate: bool = True,
     ):
         """
         Allow any account valuation to be modified
@@ -544,9 +532,7 @@ class totalCapitalCalculationData(object):
 
     def propagate_broker_account(self, date):
         broker_account_value = self.capital_data.get_broker_account_value()
-        self.capital_data.update_broker_account_value(
-            broker_account_value, date=date
-        )
+        self.capital_data.update_broker_account_value(broker_account_value, date=date)
 
     def create_initial_capital(
         self,
@@ -625,12 +611,18 @@ def get_dict_of_capital_by_strategy():
     data.add_class_object(mongoCapitalData)
     old_data_capital = data.db_capital
     strategy_list = old_data_capital.get_list_of_strategies_with_capital()
-    dict_of_capital = dict([
-        (strategy_name, old_data_capital.get_capital_pd_series_for_strategy(strategy_name))
-        for strategy_name in strategy_list
-    ])
+    dict_of_capital = dict(
+        [
+            (
+                strategy_name,
+                old_data_capital.get_capital_pd_series_for_strategy(strategy_name),
+            )
+            for strategy_name in strategy_list
+        ]
+    )
 
     return dict_of_capital
+
 
 def get_old_capital():
     data = dataBlob()
@@ -642,15 +634,18 @@ def get_old_capital():
 
     return original_capital_pd
 
+
 def delete_old_total_capital():
     data = dataBlob()
     data.add_class_object(mongoCapitalData)
     old_data_capital = data.db_capital
-    old_data_capital.delete_all_special_capital_entries( are_you_really_sure=True)
+    old_data_capital.delete_all_special_capital_entries(are_you_really_sure=True)
+
 
 def delete_old_capital_for_strategy(strategy_name):
     data = dataBlob()
     data.add_class_object(mongoCapitalData)
     old_data_capital = data.db_capital
-    old_data_capital.delete_all_capital_for_strategy(strategy_name,
-                                                     are_you_really_sure=True)
+    old_data_capital.delete_all_capital_for_strategy(
+        strategy_name, are_you_really_sure=True
+    )

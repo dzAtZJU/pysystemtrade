@@ -6,7 +6,8 @@ Depends on instrument order and type of order
 """
 from sysproduction.data.orders import dataOrders
 from sysproduction.data.broker import dataBroker
-from syscore.objects import missing_order, arg_not_supplied
+from syscore.constants import arg_not_supplied
+from sysexecution.orders.named_order_objects import missing_order
 from sysdata.data_blob import dataBlob
 from sysexecution.orders.instrument_orders import (
     instrumentOrder,
@@ -86,9 +87,7 @@ def check_and_if_required_allocate_algo_to_single_contract_order(
         )
 
     elif instrument_order_type == limit_order_type:
-        contract_order = allocate_for_limit_order(
-            data, contract_order=contract_order
-        )
+        contract_order = allocate_for_limit_order(data, contract_order=contract_order)
 
     elif instrument_order_type == balance_order_type:
         log.critical("Balance orders aren't executed, shouldn't even be here!")
@@ -113,6 +112,7 @@ def allocate_for_best_execution_no_limit(
     contract_order.algo_to_use = ORIGINAL_BEST
 
     return contract_order
+
 
 def allocate_for_limit_order(
     data: dataBlob, contract_order: contractOrder

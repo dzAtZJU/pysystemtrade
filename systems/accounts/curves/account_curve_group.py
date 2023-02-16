@@ -57,7 +57,7 @@ class accountCurveGroup(accountCurve):
             self.dict_of_account_curves,
             capital=self.capital,
             curve_type=GROSS_CURVE,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -68,7 +68,7 @@ class accountCurveGroup(accountCurve):
             self.dict_of_account_curves,
             capital=self.capital,
             curve_type=NET_CURVE,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -78,7 +78,7 @@ class accountCurveGroup(accountCurve):
             self.dict_of_account_curves,
             capital=self.capital,
             curve_type=COSTS_CURVE,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -99,7 +99,7 @@ class accountCurveGroup(accountCurve):
             self.dict_of_account_curves,
             capital=self.capital,
             frequency=Frequency.Week,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -109,7 +109,7 @@ class accountCurveGroup(accountCurve):
             self.dict_of_account_curves,
             capital=self.capital,
             frequency=Frequency.Month,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -119,7 +119,7 @@ class accountCurveGroup(accountCurve):
             self.dict_of_account_curves,
             capital=self.capital,
             frequency=Frequency.Year,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -129,7 +129,7 @@ class accountCurveGroup(accountCurve):
             self.dict_of_account_curves,
             capital=self.capital,
             is_percentage=True,
-            **kwargs
+            **kwargs,
         )
 
     @property
@@ -139,7 +139,7 @@ class accountCurveGroup(accountCurve):
             self.dict_of_account_curves,
             capital=self.capital,
             is_percentage=False,
-            **kwargs
+            **kwargs,
         )
 
     @property

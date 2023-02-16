@@ -6,10 +6,19 @@ There is the caching in the base system, but that's special uses decorators etc
 Here's a more general one
 """
 from syscore.exceptions import missingData
-from syscore.objects import missing_data
+from syscore.constants import missing_data
 
 
 class Cache(object):
+    """
+    >>> some_class = _testCacheClass()
+    >>> some_class.square(2)
+    calculating
+    4
+    >>> some_class.square(2)
+    4
+    """
+
     def __init__(self, parent_object):
         self._parent = parent_object
         self._store = {}
@@ -20,7 +29,9 @@ class Cache(object):
         try:
             value_from_store = self._get_from_store(key)
         except missingData:
-            value_from_store = self._calculate_and_store(key, function_instance, *args, **kwargs)
+            value_from_store = self._calculate_and_store(
+                key, function_instance, *args, **kwargs
+            )
 
         return value_from_store
 
@@ -47,5 +58,18 @@ class Cache(object):
     def parent(self):
         return self._parent
 
+
 def _get_key(function_name, tuple_of_args: tuple, dict_of_kwargs: dict) -> str:
     return "%s/%s/%s" % (str(function_name), str(tuple_of_args), str(dict_of_kwargs))
+
+
+class _testCacheClass(object):
+    def __init__(self):
+        self.cache = Cache(self)
+
+    def square(self, x):
+        return self.cache.get(self._square, x)
+
+    def _square(self, x):
+        print("calculating")
+        return x**2

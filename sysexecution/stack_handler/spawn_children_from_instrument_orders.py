@@ -1,7 +1,8 @@
 from collections import namedtuple
 
 from syscore.genutils import sign
-from syscore.objects import missing_order, success, missing_data
+from syscore.constants import missing_data, success
+from sysexecution.orders.named_order_objects import missing_order
 
 from sysdata.data_blob import dataBlob
 
@@ -229,7 +230,6 @@ def get_required_contract_trade_for_instrument(
             % (str(instrument_order), current_contract)
         )
         return [contractIdAndTrade(current_contract, trade)]
-
 
     elif diag_positions.is_roll_state_passive(instrument_code):
         # no log as function does it
@@ -538,13 +538,13 @@ def calculate_adjusted_price_for_a_direct_child_order(
 
     child_contract_date = child_order.contract_date_key
 
-    adjusted_price =\
-        modify_price_when_contract_has_changed(data=data,
-                                               instrument_code=instrument_code,
-                                               original_contract_date=original_contract_date,
-                                               new_contract_date=child_contract_date,
-                                               original_price=original_price,
-                                               )
+    adjusted_price = modify_price_when_contract_has_changed(
+        data=data,
+        instrument_code=instrument_code,
+        original_contract_date=original_contract_date,
+        new_contract_date=child_contract_date,
+        original_price=original_price,
+    )
 
     return adjusted_price
 

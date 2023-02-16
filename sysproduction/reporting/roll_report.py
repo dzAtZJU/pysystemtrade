@@ -1,5 +1,6 @@
 from typing import Optional
-from syscore.objects import body_text, ALL_ROLL_INSTRUMENTS
+from sysobjects.production.roll_state import ALL_ROLL_INSTRUMENTS
+from sysproduction.reporting.reporting_functions import body_text
 
 # We want a roll report (We could merge this into another kind of report)
 # We want to be able to have it emailed, or run it offline
@@ -9,7 +10,11 @@ from syscore.objects import body_text, ALL_ROLL_INSTRUMENTS
 from sysproduction.reporting.api import reportingApi
 
 
-def roll_report(data, instrument_code=ALL_ROLL_INSTRUMENTS, reporting_api: Optional[reportingApi]=None):
+def roll_report(
+    data,
+    instrument_code=ALL_ROLL_INSTRUMENTS,
+    reporting_api: Optional[reportingApi] = None,
+):
     """
     Get some roll info. For all markets which are:
 
@@ -51,5 +56,5 @@ def roll_report(data, instrument_code=ALL_ROLL_INSTRUMENTS, reporting_api: Optio
     return formatted_output
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     roll_report()

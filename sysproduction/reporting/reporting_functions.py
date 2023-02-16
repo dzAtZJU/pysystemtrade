@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from PyPDF2 import PdfMerger
 import datetime
 import pandas as pd
@@ -6,25 +8,35 @@ import shutil
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 
-from syscore.objects import resolve_function, arg_not_supplied, missing_data
-from syscore.objects import header, table, body_text, figure
+from syscore.objects import resolve_function
+from syscore.constants import missing_data, arg_not_supplied
 from syscore.fileutils import get_resolved_pathname
 from syscore.dateutils import datetime_to_long
-from syscore.text import landing_strip_from_str, landing_strip, centralise_text
+from syscore.interactive.display import (
+    landing_strip_from_str,
+    landing_strip,
+    centralise_text,
+)
 from sysdata.data_blob import dataBlob
 
-from syslogdiag.email_via_db_interface import send_production_mail_msg, send_production_mail_msg_attachment
+from syslogdiag.email_via_db_interface import (
+    send_production_mail_msg,
+    send_production_mail_msg_attachment,
+)
 
 from sysproduction.reporting.report_configs import reportConfig
 
 
+figure = namedtuple("figure", "pdf_filename")
+
+
 class ParsedReport(object):
-    def __init__(self,
-                 text: str = arg_not_supplied,
-                 pdf_filename: str = arg_not_supplied):
+    def __init__(
+        self, text: str = arg_not_supplied, pdf_filename: str = arg_not_supplied
+    ):
 
         self._text = text
-        self._pdf_filename =pdf_filename
+        self._pdf_filename = pdf_filename
 
     @property
     def contains_pdf(self) -> bool:
@@ -38,8 +50,8 @@ class ParsedReport(object):
     def pdf_filename(self) -> str:
         return self._pdf_filename
 
-def run_report(report_config: reportConfig,
-               data: dataBlob = arg_not_supplied):
+
+def run_report(report_config: reportConfig, data: dataBlob = arg_not_supplied):
     """
 
     :param report_config:
@@ -61,18 +73,13 @@ def run_report_with_data_blob(report_config: reportConfig, data: dataBlob):
 
     data.log.msg("Running report %s" % str(report_config))
 
-    report_results = run_report_from_config(report_config = report_config,
-                                            data=data)
-    parsed_report = parse_report_results(data = data,
-                                         report_results = report_results)
+    report_results = run_report_from_config(report_config=report_config, data=data)
+    parsed_report = parse_report_results(data=data, report_results=report_results)
 
-    output_report(parsed_report=parsed_report,
-                  report_config=report_config,
-                  data=data)
+    output_report(parsed_report=parsed_report, report_config=report_config, data=data)
 
 
-def run_report_from_config(report_config: reportConfig,
-                           data: dataBlob) -> list:
+def run_report_from_config(report_config: reportConfig, data: dataBlob) -> list:
 
     report_function = resolve_function(report_config.function)
     report_kwargs = report_config.kwargs
@@ -97,11 +104,14 @@ def parse_report_results(data: dataBlob, report_results: list) -> ParsedReport:
 
     return output_string
 
+
 def report_contains_figures(report_results: list) -> bool:
-    any_figures_in_report = \
-        any([type(report_item) is figure for report_item in report_results])
+    any_figures_in_report = any(
+        [type(report_item) is figure for report_item in report_results]
+    )
 
     return any_figures_in_report
+
 
 def parse_report_results_contains_text(report_results: list) -> ParsedReport:
     """
@@ -128,6 +138,9 @@ def parse_report_results_contains_text(report_results: list) -> ParsedReport:
     return parsed_report
 
 
+table = namedtuple("table", "Heading Body")
+
+
 def parse_table(report_table: table) -> str:
     table_header = report_table.Heading
     table_body = str(report_table.Body)
@@ -144,9 +157,15 @@ def parse_table(report_table: table) -> str:
     return table_string
 
 
+body_text = namedtuple("bodytext", "Text")
+
+
 def parse_body(report_body: body_text) -> str:
     body_text = report_body.Text
     return "%s\n" % body_text
+
+
+header = namedtuple("header", "Heading")
 
 
 def parse_header(report_header: header) -> str:
@@ -156,8 +175,9 @@ def parse_header(report_header: header) -> str:
     return "\n%s\n%s\n%s\n\n\n" % (header_line, header_text, header_line)
 
 
-def parse_report_results_contains_figures(data: dataBlob,
-                                          report_results: list) -> ParsedReport:
+def parse_report_results_contains_figures(
+    data: dataBlob, report_results: list
+) -> ParsedReport:
     merger = PdfMerger()
 
     for report_item in report_results:
@@ -176,16 +196,16 @@ def parse_report_results_contains_figures(data: dataBlob,
 
     return parsed_report
 
+
 def pandas_display_for_reports():
     pd.set_option("display.width", 1000)
     pd.set_option("display.max_columns", 1000)
     pd.set_option("display.max_rows", 1000)
 
 
-def output_report(data: dataBlob,
-                  report_config: reportConfig,
-                  parsed_report: ParsedReport
-                  ):
+def output_report(
+    data: dataBlob, report_config: reportConfig, parsed_report: ParsedReport
+):
 
     output = report_config.output
 
@@ -193,16 +213,12 @@ def output_report(data: dataBlob,
     if output == "console":
         display_report(parsed_report)
     elif output == "email":
-        email_report(parsed_report,
-                     report_config=report_config, data=data)
+        email_report(parsed_report, report_config=report_config, data=data)
     elif output == "file":
-        output_file_report(parsed_report,
-                           report_config=report_config, data=data)
+        output_file_report(parsed_report, report_config=report_config, data=data)
     elif output == "emailfile":
-        email_report(parsed_report,
-                     report_config=report_config, data=data)
-        output_file_report(parsed_report,
-                           report_config=report_config, data=data)
+        email_report(parsed_report, report_config=report_config, data=data)
+        output_file_report(parsed_report, report_config=report_config, data=data)
     else:
         raise Exception("Report config output destination %s not recognised!" % output)
 
@@ -214,6 +230,7 @@ def display_report(parsed_report: ParsedReport):
     else:
         print(parsed_report.text)
 
+
 def display_pdf_report(parsed_report: ParsedReport):
     pdf_filename = parsed_report.pdf_filename
     print("Trying to display %s" % pdf_filename)
@@ -221,40 +238,42 @@ def display_pdf_report(parsed_report: ParsedReport):
         ## thing
         os.system("evince %s" % pdf_filename)
     except:
-        print("Display pdf with evince doesn't seem to work with your OS or perhaps headless terminal?")
-
-
-def email_report(parsed_report: ParsedReport,
-                 report_config: reportConfig,
-                 data: dataBlob):
-
-    if parsed_report.contains_pdf:
-        send_production_mail_msg_attachment(body = "Report attached",
-                                            subject = report_config.title,
-                                            filename= parsed_report.pdf_filename)
-    else:
-        send_production_mail_msg(
-            data =data,
-            body=parsed_report.text,
-            subject=report_config.title,
-            email_is_report=True
+        print(
+            "Display pdf with evince doesn't seem to work with your OS or perhaps headless terminal?"
         )
 
 
+def email_report(
+    parsed_report: ParsedReport, report_config: reportConfig, data: dataBlob
+):
 
-def output_file_report(parsed_report: ParsedReport,
-                       report_config: reportConfig,
-                       data: dataBlob):
-    full_filename = resolve_report_filename(report_config=report_config,
-                                            data=data)
+    if parsed_report.contains_pdf:
+        send_production_mail_msg_attachment(
+            body="Report attached",
+            subject=report_config.title,
+            filename=parsed_report.pdf_filename,
+        )
+    else:
+        send_production_mail_msg(
+            data=data,
+            body=parsed_report.text,
+            subject=report_config.title,
+            email_is_report=True,
+        )
+
+
+def output_file_report(
+    parsed_report: ParsedReport, report_config: reportConfig, data: dataBlob
+):
+    full_filename = resolve_report_filename(report_config=report_config, data=data)
     if parsed_report.contains_pdf:
         ## Already a file so just rename temp file name to final one
         pdf_full_filename = "%s.pdf" % full_filename
-        shutil.copyfile(parsed_report.pdf_filename,
-                        pdf_full_filename)
+        shutil.copyfile(parsed_report.pdf_filename, pdf_full_filename)
     else:
-        write_text_report_to_file(report_text=parsed_report.text,
-                                  full_filename=full_filename)
+        write_text_report_to_file(
+            report_text=parsed_report.text, full_filename=full_filename
+        )
 
     data.log.msg("Written report to %s" % full_filename)
 
@@ -280,22 +299,24 @@ def get_directory_for_reporting(data):
 
     return store_directory
 
-def write_text_report_to_file(
-                              report_text: str,
-                              full_filename: str):
+
+def write_text_report_to_file(report_text: str, full_filename: str):
     with open(full_filename, "w") as f:
         f.write(report_text)
 
 
-class PdfOutputWithTempFileName():
+class PdfOutputWithTempFileName:
     """
     # generate some kind of plot, then call:
     pdf_output = PdfOutputWithTempFileName(data)
     figure_object = pdf_output.save_chart_close_and_return_figure()
 
     """
-    def __init__(self, data: dataBlob):
-        self._temp_file_name = _generate_temp_pdf_filename(data)
+
+    def __init__(self, data: dataBlob, reporting_directory=arg_not_supplied):
+        self._temp_file_name = _generate_temp_pdf_filename(
+            data, reporting_directory=reporting_directory
+        )
 
     def save_chart_close_and_return_figure(self) -> figure:
         with PdfPages(self.temp_file_name) as export_pdf:
@@ -308,11 +329,23 @@ class PdfOutputWithTempFileName():
     def temp_file_name(self) -> str:
         return self._temp_file_name
 
+
 TEMPFILE_PATTERN = "_tempfile"
-def _generate_temp_pdf_filename(data: dataBlob) -> str:
-    use_directory = get_directory_for_reporting(data)
+
+
+def _generate_temp_pdf_filename(
+    data: dataBlob, reporting_directory=arg_not_supplied
+) -> str:
+    if reporting_directory is arg_not_supplied:
+        use_directory = get_directory_for_reporting(data)
+    else:
+        use_directory = reporting_directory
+
     use_directory_resolved = get_resolved_pathname(use_directory)
-    filename = "%s_%s.pdf" % (TEMPFILE_PATTERN, str(datetime_to_long(datetime.datetime.now())))
+    filename = "%s_%s.pdf" % (
+        TEMPFILE_PATTERN,
+        str(datetime_to_long(datetime.datetime.now())),
+    )
     full_filename = os.path.join(use_directory_resolved, filename)
 
     return full_filename

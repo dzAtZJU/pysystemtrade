@@ -1,4 +1,4 @@
-from syscore.objects import arg_not_supplied
+from syscore.constants import arg_not_supplied
 
 from paper.sysdata.sim.db_perpetuals_sim_data import dbPerpetualsSimData
 from paper.sysdata.data_blob import dataBlob
