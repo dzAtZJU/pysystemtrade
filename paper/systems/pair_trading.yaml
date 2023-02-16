@@ -9,21 +9,26 @@ notional_trading_capital: 1_500
 
 base_currency: "USDT"
 trading_rules:
-  sd:
-     function: paper.systems.rules.pair_trading.sd
+  pair_trading:
+     function: paper.systems.rules.pair_trading.pair_trading
      data:
          - "rawdata.get_daily_prices"
          - "rawdata.pair_daily_prices_for"
      other_args:
         lookback: 10
 
-instruments: [BTC-USDT-SWAP,  ETH-USDT-SWAP]
+instruments: [UAL,  AAL]
 instrument_div_multiplier: 1
 instrument_weights:
-  BTC-USDT-SWAP: 0.5
-  ETH-USDT-SWAP: 0.5
+  UAL: 0.5
+  AAL: 0.5
 forecast_weights:
-  BTC-USDT-SWAP:
-    sd: 1
-  ETH-USDT-SWAP:
-    sd: 1
+  UAL:
+    pair_trading: 1
+  AAL:
+    pair_trading: 1
+
+volatility_calculation:
+  func: "sysquant.estimators.vol.simple_vol_calc"
+  days: 10
+  min_periods: 5

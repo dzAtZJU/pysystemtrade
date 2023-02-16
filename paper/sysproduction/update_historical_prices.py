@@ -50,6 +50,8 @@ def update_historical_prices_with_data(data: dataBlob,
     cleaning_config = get_config_for_price_filtering(data)
     list_of_codes_all = mongoFuturesInstrumentData(data.mongo_db).get_list_of_instruments()
     for instrument_code in list_of_codes_all:
+        if instrument_code == 'AAL' or instrument_code == 'UAL':
+            continue
         data.log.label(instrument_code=instrument_code)
         update_historical_prices_for_instrument(instrument_code, data,
                                                 cleaning_config = cleaning_config,

@@ -354,8 +354,8 @@ class RawData(SystemStage):
     @output()
     def pair_daily_prices_for(self, instrument_code: str) -> pd.Series:
         pair_dict = {
-            'BTC-USDT-SWAP': 'ETH-USDT-SWAP' ,
-            'ETH-USDT-SWAP' : 'BTC-USDT-SWAP'
+            'UAL': 'AAL' ,
+            'AAL' : 'UAL'
         }
         pair = pair_dict[instrument_code]
         return self.get_daily_prices(pair)
