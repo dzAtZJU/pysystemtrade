@@ -90,7 +90,7 @@ class arcticPerpetualsPricesData(perpetualsPriceData):
             % (len(futures_price_data), str(instrument_code), str(frequency), str(self))
         )
     
-    def _get_prices_at_frequency_for_contract_object_no_checking \
+    def _get_prices_at_frequency_no_checking \
                     (self, instrument_code, frequency: Frequency) -> futuresContractPrices:
 
         ident = from_contract_and_freq_to_key(instrument_code,

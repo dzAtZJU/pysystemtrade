@@ -65,7 +65,7 @@ def perpetuals_system(
         data = get_sim_data_object_for_production()
 
     if config is arg_not_supplied:
-        config = Config('paper.systems.crypto_v0.yaml')
+        config = Config('paper.systems.production.yaml')
     else:
         config = Config(config)
         

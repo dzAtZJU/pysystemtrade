@@ -1,9 +1,8 @@
 #YAML
 use_instrument_weight_estimates: False
 use_forecast_weight_estimates: False
-
 percentage_vol_target: 50
-notional_trading_capital: 1_500
+notional_trading_capital: 4300
 
 base_currency: "USDT"
 trading_rules:
@@ -23,6 +22,14 @@ trading_rules:
      other_args:
          Lfast: 6
          Lslow: 24
+  ewmac8:
+     function: systems.provided.rules.ewmac.ewmac
+     data:
+         - "rawdata.get_daily_prices"
+         - "rawdata.daily_returns_volatility"
+     other_args:
+         Lfast: 8
+         Lslow: 32
 instruments: [BTC-USDT-SWAP,  ETH-USDT-SWAP, ]
 instrument_div_multiplier: 1
 instrument_weights:
@@ -30,10 +37,30 @@ instrument_weights:
   ETH-USDT-SWAP: 0.5
 forecast_weights:
   BTC-USDT-SWAP:
-    ewmac4: 0.75
+    # ewmac4: 0.6
+    # ewmac6: 0.3
+    # ewmac8: 0.3
+    # ewmac4: 0.5
+    # ewmac6: 0.25
+    # ewmac8: 0.25
+    ewmac4: 0.5
     ewmac6: 0.25
+    ewmac8: 0.25
+    # ewmac4: 0.75
+    # ewmac6: 0.25
+    # ewmac8: 0
   ETH-USDT-SWAP:
-    ewmac4: 0.75
+    # ewmac4: 0.6
+    # ewmac6: 0.3
+    # ewmac8: 0.3
+    # ewmac4: 0.5
+    # ewmac6: 0.25
+    # ewmac8: 0.25
+    ewmac4: 0.5
     ewmac6: 0.25
+    ewmac8: 0.25
+    # ewmac4: 0.75
+    # ewmac6: 0.25
+    # ewmac8: 0
 forecast_div_multiplier: 1
 

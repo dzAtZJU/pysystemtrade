@@ -1,11 +1,6 @@
 from dateutil.tz import tz
-from dateutil.parser import isoparse
 import datetime
 import pandas as pd
-
-from ib_insync import Contract as ibContract
-from ib_insync import util
-
 from sysbrokers.IB.client.ib_client import PACING_INTERVAL_SECONDS
 from paper.sysbrokers.ccxt.client.ccxt_instrument_client import ccxtInstrumentsClient
 from sysbrokers.IB.ib_positions import resolveBS_for_list
@@ -255,8 +250,9 @@ class ccxtPriceClient(ccxtInstrumentsClient):
 
         dfs = []
         
-        if instrument_code in ['BNB-USDT']:
+        if 'Binance' in instrument_code:
             exchange = self.binance
+            instrument_code = instrument_code.replace('-Binance', '')
             instrument_code = instrument_code.replace('-', '/')
         else:
             exchange = self.okx
@@ -297,7 +293,7 @@ def _get_barsize_and_duration_from_frequency(bar_freq: Frequency) -> (str, int):
     duration_lookup = dict(
         [
             (Frequency.Day, 3),
-            (Frequency.Hour, 3 * 24),
+            (Frequency.Hour, 4 * 24),
             (Frequency.Minutes_15, "1 W"),
             (Frequency.Minutes_5, "1 W"),
             (Frequency.Minute, "1 D"),

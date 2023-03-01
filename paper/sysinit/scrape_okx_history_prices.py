@@ -154,13 +154,25 @@ if __name__ == '__main__':
 # df
 
 if __name__ == '__main__':
-    from syscore.fileutils import get_filename_for_package
-    import ccxt
+    from syscore.fileutils import  resolve_path_and_filename_for_package
+    import ccxt, os
 
-    # exchange = ccxt.binanceusdm()
-    exchange = ccxt.okex5()
-    # symbol = 'BNB/USDT'
-    symbol = 'BTC-USDT-SWAP'
+    # exchange_name = 'Binance'
+    ins = 'BTC'
+    exchange_name = 'OKX'
+    if exchange_name == 'Binance':
+        exchange = ccxt.binanceusdm()
+        symbol = '{}/USDT'.format(ins)
+    else:
+        exchange = ccxt.okex5()
+        symbol = '{}-USDT-SWAP'.format(ins)
     timeframe = ('1h', 'Hour')
-    history = tmp('2020-01-01T09:00+08', timeframe[0], symbol, exchange)
-    history.to_csv(get_filename_for_package('{}.{}_{}.csv'.format('paper.sysinit.data.okx', timeframe[1], symbol.replace('/', '-'))))
+    since = '2020-01-01T09:00+08'
+    # since = '2023-02-22T09:00+08'
+    history = tmp(since, timeframe[0], symbol, exchange)
+    
+    if exchange_name == 'Binance':
+        symbol = symbol.replace('/', '-')
+        symbol += '-Binance'
+    history.to_csv(resolve_path_and_filename_for_package('{}.{}_{}.csv'.format('paper.sysinit.data.{}'.format(exchange_name), timeframe[1], symbol)))
+    os.system('say "done, bitch"')

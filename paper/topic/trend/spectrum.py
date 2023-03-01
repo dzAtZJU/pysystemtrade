@@ -31,9 +31,9 @@ def psd(y_values, sampling_frequency, mph=1):
 def signal_fft(sampled_signal, sampling_frequency, mph=100):
     assert len(sampled_signal) > 50
     trend =  pd.Series(savgol_filter(sampled_signal, len(sampled_signal),1), index=sampled_signal.index)
-    trend.plot()
+    # trend.plot()
     detrended = (sampled_signal - trend).rename('detrended')
-    detrended.plot(secondary_y=True, legend=True)
+    # detrended.plot(secondary_y=True, legend=True, figsize=(15, 6))
 
     fft_y_  = fft(detrended) * 2.0 / len(detrended)
     fft_y = np.abs(fft_y_[:len(fft_y_)//2])
@@ -45,6 +45,7 @@ def signal_fft(sampled_signal, sampling_frequency, mph=100):
 
     ax.plot(fft_x, fft_y)
     ax.scatter([fft_x[i] for i in indices_peaks], [fft_y[i] for i in indices_peaks], color='red',marker='D')
+    plt.show()
     for idx in indices_peaks:
         x,y = fft_x[idx], fft_y[idx]
         text = "  F = {:.2f}".format(x)
@@ -69,27 +70,27 @@ def demo(T=0.05, mph_fft=0.5, mph_psd=0.5):
     plt.show()
     psd(df.y, sampling_frequency, mph_psd)
 
-if __name__ == '__main__':
-    from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
-    from paper.systems.simplesystem import simplesystem
-    from ctse.systems.ct_system import ct_system
-    import pandas as pd
-    import matplotlib.pyplot as plt
+# if __name__ == '__main__':
+#     from sysdata.sim.csv_futures_sim_data import csvFuturesSimData
+#     from paper.systems.simplesystem import simplesystem
+#     from ctse.systems.ct_system import ct_system
+#     import pandas as pd
+#     import matplotlib.pyplot as plt
 
-    system = ct_system()
-    rawdata = system.rawdata
-    data = system.data
+#     system = ct_system()
+#     rawdata = system.rawdata
+#     data = system.data
 
-    def snr(s: pd.Series):
-        return abs((s[-1] - s[0])) / s.diff().abs().sum()
+#     def snr(s: pd.Series):
+#         return abs((s[-1] - s[0])) / s.diff().abs().sum()
 
-    term = 40
-    inss = [ins for ins in system.get_instrument_list()]
-    snrs = [data.daily_prices(ins).dropna().rolling(term, min_periods=term).apply(snr).rename(ins) for ins in inss]
-    df = pd.concat(snrs, axis=1)
-    mdi = df.mean(axis=1).rename('mdi')
+#     term = 40
+#     inss = [ins for ins in system.get_instrument_list()]
+#     snrs = [data.daily_prices(ins).dropna().rolling(term, min_periods=term).apply(snr).rename(ins) for ins in inss]
+#     df = pd.concat(snrs, axis=1)
+#     mdi = df.mean(axis=1).rename('mdi')
 
-    detrend =(mdi - mdi.mean()).dropna()
+#     detrend =(mdi - mdi.mean()).dropna()
 
-    from paper.topic.spectrum import signal_fft
-    signal_fft(detrend, 0.012)
+#     from paper.topic.spectrum import signal_fft
+#     signal_fft(detrend, 0.012)

@@ -267,7 +267,7 @@ class perpetualsPriceData(baseData):
 
         if self.has_price_data_for_contract_at_frequency(instrument_code, frequency=frequency):
             try:
-                return self._get_prices_at_frequency_for_contract_object_no_checking(instrument_code,
+                return self._get_prices_at_frequency_no_checking(instrument_code,
                                                                                      frequency=frequency)
             except missingData:
                 return missing_data
@@ -534,7 +534,7 @@ class perpetualsPriceData(baseData):
         raise NotImplementedError(BASE_CLASS_ERROR)
 
 
-    def _get_prices_at_frequency_for_contract_object_no_checking \
+    def _get_prices_at_frequency_no_checking \
                     (self, futures_contract_object: futuresContract, frequency: Frequency) -> futuresContractPrices:
 
         raise NotImplementedError(BASE_CLASS_ERROR)

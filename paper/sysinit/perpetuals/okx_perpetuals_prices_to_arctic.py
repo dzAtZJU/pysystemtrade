@@ -1,4 +1,4 @@
-from syscore.pdutils import pd_readcsv
+from syscore.pandas.pdutils import pd_readcsv
 from syscore.dateutils import Frequency
 from sysdata.csv.csv_futures_contract_prices import ConfigCsvFuturesPrices
 from paper.sysdata.arctic.arctic_perpetual_prices import arcticPerpetualsPricesData
@@ -12,25 +12,27 @@ from syscore.fileutils import (
     get_resolved_pathname,
 )
 
-datapath = "paper.sysinit.data"
-date_format = '%m/%d/%Y'
-barchart_csv_config = ConfigCsvFuturesPrices(
-    input_date_index_name="Time",
-    input_skiprows=0,
-    input_skipfooter=1,
-    input_column_mapping=dict(
-        OPEN="Open", HIGH="High", LOW="Low", FINAL="Last", VOLUME="Volume"
-    ),
-)
+datapath = "paper.sysinit.data.OKX"
 
+# date_format = '%m/%d/%Y'
 # barchart_csv_config = ConfigCsvFuturesPrices(
-#     input_date_index_name="date",
+#     input_date_index_name="Time",
 #     input_skiprows=0,
-#     input_skipfooter=0,
+#     input_skipfooter=1,
 #     input_column_mapping=dict(
-#         OPEN="OPEN", HIGH="HIGH", LOW="LOW", FINAL="FINAL", VOLUME="VOLUME"
+#         OPEN="Open", HIGH="High", LOW="Low", FINAL="Last", VOLUME="Volume"
 #     ),
 # )
+
+date_format = '%Y-%m-%d %H:%M:%S'
+barchart_csv_config = ConfigCsvFuturesPrices(
+    input_date_index_name="date",
+    input_skiprows=0,
+    input_skipfooter=0,
+    input_column_mapping=dict(
+        OPEN="OPEN", HIGH="HIGH", LOW="LOW", FINAL="FINAL", VOLUME="VOLUME"
+    ),
+)
 
 def strip_file_names(pathname, date_format):
     # These won't have .csv attached
@@ -55,3 +57,4 @@ if __name__ == "__main__":
     input("Will overwrite existing prices are you sure?! CTL-C to abort")
     # modify flags as required
     strip_file_names(datapath, date_format)
+    os.system('say "done, bitch"')

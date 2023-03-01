@@ -75,6 +75,9 @@ def ewmac_forecast_with_defaults_no_vol(price, vol, Lfast=16, Lslow=32):
 
     return ans
 
+def hour_ewmac(price):
+  vol = robust_vol_calc(price.diff())
+  return ewmac(price, vol, 4, 16)
 
 def ewmac(price, vol, Lfast, Lslow):
     """
