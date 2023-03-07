@@ -1,0 +1,2 @@
+current_pos != position.iloc[-2]current_pos != position.iloc[-2]current_pos != position.iloc[-2]current_pos != position.iloc[-2]
+2023-03-03 17:00:32.774083 22419.4 -18.1 -138.57

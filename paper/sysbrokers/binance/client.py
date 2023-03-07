@@ -89,6 +89,10 @@ class T:
 def main():
     t = T()
 
+    def log(txt):
+        with open('job.txt', 'a') as f:
+            f.write(txt + '\n')
+
     def  job():
         new_df = t.update_price(Ins)
         if new_df.empty:
@@ -98,17 +102,24 @@ def main():
         price = t.read_one_year(Ins, curret_datetime)
         position = t.cal_position(price)
 
-        diff = position.iloc[-1] - position.iloc[-2]
+        current_pos = float(client.futures_position_information(symbol=Ins.replace('/', ''))[0]['positionAmt'])
+        if current_pos != position.iloc[-2]:
+            log('current_pos != position.iloc[-2]')
+
+        optimal_pos = position.iloc[-1]
+        if current_pos == optimal_pos:
+            log('current_pos == optimal_pos')
+            return 
+
+        diff = optimal_pos - current_pos
         abs_diff = abs(diff)
+        log('{} {} {} {}'.format(datetime.now(), price[-1], position[-2], position[-1]))
         order_info = None
         if diff > 0:
             order_info = client.futures_create_order(symbol='BTCUSDT', side='BUY', type='MARKET', quantity=abs_diff)
         else:
             order_info  = client.futures_create_order(symbol='BTCUSDT', side='SELL', type='MARKET', quantity=abs_diff)
-
-        with open('job.txt', 'a') as f:
-            f.write('{} {} {} {} {}'.format(datetime.now(), price[-1], position[-2], position[-1], order_info))
-            f.write('\n')
+        log('{} {}'.format(datetime.now(), order_info))
 
     if Fre == '1m':
         schedule.every().minute.at(Time).do(job)
@@ -120,11 +131,12 @@ def main():
     while True:
         schedule.run_pending()
         time.sleep(Sleep)
-
+    
+    
 
 if __name__ == '__main__':
     # T.init_db()
-    t = T()
+    # t = T()
     # t.init_symbol(Ins)
     # t.update_price(Ins)
     # t.clear_symbol(Ins)
