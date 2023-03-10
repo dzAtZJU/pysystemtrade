@@ -13,13 +13,9 @@ forecast_weights:
      ewmac4: 1
 forecast_div_multiplier: 1
 instrument_weights:
-     FTSECHINAA: 0.1
-     BITCOIN: 0.1
-     GOLD: 0.1
-     CRUDE_W_mini: 0.1
-     IRON: 0.1
-     SOYBEAN: 0.1
-     SP500: 0.1
-     CHF: 0.1
+     CNH: 0.1
+     CNH-onshore: 0.1
+     USIRS2ERIS: 0.1
+     FTSECHINA: 0.1
 instrument_div_multiplier: 1
 position_sizing_method: 'none_so_every_trade_cash_all_in'

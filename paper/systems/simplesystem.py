@@ -5,27 +5,29 @@ from systems.forecasting import Rules
 from systems.basesystem import System
 from ctse.systems.forecast_combine import ctseForecastCombine
 from systems.forecast_scale_cap import ForecastScaleCap
-from ctse.systems.positionsizing import ctsePositionSizing
+from systems.positionsizing import PositionSizing
 from systems.positionsizing import PositionSizing
 from systems.portfolio import Portfolios
-from paper.accounts_stage import paperAccount
-from paper.rawdata import paperRawData
+from systems.accounts.accounts_stage import Account
+from systems.rawdata import RawData
 
 
 def simplesystem(data=None, config=None, log_level="on"):
     """
     Example of how to 'wrap' a complete system
     """
+    if data is None:
+        data = csvFuturesSimData()
+        
     my_system = System(
         [
-            paperAccount(),
+            Account(),
             Portfolios(),
             PositionSizing(),
-            # ctsePositionSizing(),
             ctseForecastCombine(),
             ForecastScaleCap(),
             Rules(),
-            paperRawData()
+            RawData()
         ],
         data,
         Config(config),

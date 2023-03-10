@@ -7,7 +7,8 @@ from arctic import Arctic
 from itables import show
 import matplotlib.pyplot as plt
 from pprint import pprint
-
+from binance.client import Client
+from sysdata.config.configdata import Config
 plt.rcParams['axes.facecolor'] = 'black'
 plt.rcParams['figure.facecolor'] = 'black'
 plt.rcParams['xtick.color'] = 'white'
@@ -24,6 +25,11 @@ def select_period(se, period):
 
 system = perpetuals_system(config='paper.systems.production.yaml')
 
+def get_client():
+    config = Config('paper.systems.production.yaml')
+    config.fill_with_defaults()
+    client = Client(config.get_element('binance_mock_apikey'), config.get_element('binance_mock_secretkey'), testnet=True)
+    return client
 # import nasdaqdatalink
 # from coinmarketcapapi import CoinMarketCapAPI
 # cmc = CoinMarketCapAPI()

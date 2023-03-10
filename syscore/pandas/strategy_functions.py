@@ -97,6 +97,10 @@ def drawdown(x: Union[pd.DataFrame, pd.Series]) -> Union[pd.DataFrame, pd.Series
     maxx = x.expanding(min_periods=1).max()
     return x - maxx
 
+def pct_drawdown(x: Union[pd.DataFrame, pd.Series]) -> Union[pd.DataFrame, pd.Series]:
+    maxx = x.expanding(min_periods=1).max()
+    return x/maxx - 1
+
 
 def apply_abs_min(x: pd.Series, min_value: float = 0.1) -> pd.Series:
     """

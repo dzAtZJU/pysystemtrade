@@ -1,2 +1,5 @@
 current_pos != position.iloc[-2]current_pos != position.iloc[-2]current_pos != position.iloc[-2]current_pos != position.iloc[-2]
 2023-03-03 17:00:32.774083 22419.4 -18.1 -138.57
+current_pos != position.iloc[-2]
+2023-03-10 16:45:32.467647 19942.9 -0.53 -0.47
+2023-03-10 16:45:33.363032 {'orderId': 3299523265, 'symbol': 'BTCUSDT', 'status': 'NEW', 'clientOrderId': 'qkJW06ozFKggoehfmE7sx0', 'price': '0', 'avgPrice': '0.00000', 'origQty': '0.470', 'executedQty': '0', 'cumQty': '0', 'cumQuote': '0', 'timeInForce': 'GTC', 'type': 'MARKET', 'reduceOnly': False, 'closePosition': False, 'side': 'SELL', 'positionSide': 'BOTH', 'stopPrice': '0', 'workingType': 'CONTRACT_PRICE', 'priceProtect': False, 'origType': 'MARKET', 'updateTime': 1678437933261}

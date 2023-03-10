@@ -14,7 +14,7 @@ from sysdata.config.configdata import Config
 
 config = Config('paper.systems.production.yaml')
 config.fill_with_defaults()
-client = Client(config.get_element('binance_apikey'), config.get_element('binance_secretkey'), testnet=True)
+client = Client(config.get_element('binance_mock_apikey'), config.get_element('binance_mock_secretkey'), testnet=True)
 
 binance = ccxt.binanceusdm()
 db = Arctic('localhost')
@@ -22,7 +22,7 @@ Lib_Key = 'binance_v1'
 
 Ins = 'BTC/USDT'
 Fre = '1h'
-Time = ":00"
+Time = ":45"
 Sleep = 60 #seconds
 Capital = 4300
 Risk_target = 0.5
