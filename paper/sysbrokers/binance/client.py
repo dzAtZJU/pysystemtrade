@@ -113,7 +113,7 @@ def main():
             return 
 
         diff = optimal_pos - current_pos
-        abs_diff = abs(diff)
+        abs_diff = round(abs(diff), 2)
         log('{} {} {} {}'.format(datetime.now(), price[-1], position[-2], position[-1]))
         order_info = None
         if diff > 0:
@@ -136,9 +136,9 @@ def main():
     
 
 if __name__ == '__main__':
-    T.init_db()
-    t = T()
-    t.init_symbol(Ins)
+    # T.init_db()
+    # t = T()
+    # t.init_symbol(Ins)
     # t.update_price(Ins)
     # t.clear_symbol(Ins)
     # job()
