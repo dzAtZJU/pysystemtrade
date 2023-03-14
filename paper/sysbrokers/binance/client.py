@@ -20,11 +20,12 @@ binance = ccxt.binanceusdm()
 db = Arctic('localhost')
 Lib_Key = 'binance_v1'
 
+Root = '/Users/weiranzhou/Code/pysystemtrade/'
 Ins = 'BTC/USDT'
 Fre = '1h'
-Time = ":45"
+Time = ":00"
 Sleep = 60 #seconds
-Capital = 4300
+Capital = 1000
 Risk_target = 0.5
 Target_Abs_Forecast = 1
 
@@ -35,7 +36,7 @@ class T:
 
     def init_symbol(self, Ins):
         self.finance_library.delete(Ins)
-        df =  pd.read_csv(r'/Users/weiranzhou/Code/pysystemtrade/paper/sysinit/data/binance/Hour_BTC-USDT-Binance.csv')
+        df =  pd.read_csv(Root  +  r'paper/sysinit/data/binance/Hour_BTC-USDT-Binance.csv')
         df.index = pd.to_datetime(df['date']).dt.tz_localize('Asia/Hong_Kong')
         df = df.drop(columns=['date'])
         self.finance_library.write(Ins, df)
@@ -135,9 +136,9 @@ def main():
     
 
 if __name__ == '__main__':
-    # T.init_db()
-    # t = T()
-    # t.init_symbol(Ins)
+    T.init_db()
+    t = T()
+    t.init_symbol(Ins)
     # t.update_price(Ins)
     # t.clear_symbol(Ins)
     # job()

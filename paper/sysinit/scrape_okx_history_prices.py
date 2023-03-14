@@ -157,9 +157,9 @@ if __name__ == '__main__':
     from syscore.fileutils import  resolve_path_and_filename_for_package
     import ccxt, os
 
-    # exchange_name = 'Binance'
-    ins = 'BTC'
-    exchange_name = 'OKX'
+    exchange_name = 'Binance'
+    ins = 'BNB'
+    # exchange_name = 'OKX'
     if exchange_name == 'Binance':
         exchange = ccxt.binanceusdm()
         symbol = '{}/USDT'.format(ins)

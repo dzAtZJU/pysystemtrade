@@ -105,6 +105,9 @@ setup(
         "Werkzeug>=2.0.1",
         "statsmodels==0.12.2",
         "PyPDF2>=2.5.0",
+        "ccxt>=1.94.2",
+        "schedule>=1.1.0",
+        "python-binance>=1.0.17"
     ],
     tests_require=["nose", "flake8"],
     extras_require=dict(),
