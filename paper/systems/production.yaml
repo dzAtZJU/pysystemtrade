@@ -2,7 +2,7 @@
 use_instrument_weight_estimates: False
 use_forecast_weight_estimates: False
 percentage_vol_target: 50
-notional_trading_capital: 4300
+notional_trading_capital: 2000
 
 base_currency: "USDT"
 trading_rules:
@@ -30,6 +30,12 @@ trading_rules:
      other_args:
          Lfast: 8
          Lslow: 32
+  breakout10:
+     function: systems.provided.rules.breakout.breakout
+     data:
+         - "rawdata.get_daily_prices"
+     other_args:
+       lookback: 10
 instruments: [BTC-USDT-SWAP,  ETH-USDT-SWAP, ]
 instrument_div_multiplier: 1
 instrument_weights:
@@ -37,30 +43,14 @@ instrument_weights:
   ETH-USDT-SWAP: 0.5
 forecast_weights:
   BTC-USDT-SWAP:
-    # ewmac4: 0.6
-    # ewmac6: 0.3
-    # ewmac8: 0.3
-    # ewmac4: 0.5
-    # ewmac6: 0.25
-    # ewmac8: 0.25
-    ewmac4: 0.5
-    ewmac6: 0.25
-    ewmac8: 0.25
-    # ewmac4: 0.75
-    # ewmac6: 0.25
-    # ewmac8: 0
+    ewmac4: 0.2
+    ewmac6: 0.15
+    ewmac8: 0.15
+    breakout10: 0.5
   ETH-USDT-SWAP:
-    # ewmac4: 0.6
-    # ewmac6: 0.3
-    # ewmac8: 0.3
-    # ewmac4: 0.5
-    # ewmac6: 0.25
-    # ewmac8: 0.25
-    ewmac4: 0.5
-    ewmac6: 0.25
-    ewmac8: 0.25
-    # ewmac4: 0.75
-    # ewmac6: 0.25
-    # ewmac8: 0
+    ewmac4: 0.2
+    ewmac6: 0.15
+    ewmac8: 0.15
+    breakout10: 0.5
 forecast_div_multiplier: 1
 

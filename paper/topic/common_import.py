@@ -34,3 +34,9 @@ def get_client():
 # from coinmarketcapapi import CoinMarketCapAPI
 # cmc = CoinMarketCapAPI()
 # bitcoin_mcp = nasdaqdatalink.get("BCHAIN/MKTCP", authtoken="tUBiAfPRP71_SsxYs_Zw")
+
+if __name__ == '__main__':
+    for ins in system.portfolio.get_instrument_list():
+        # pos = system.portfolio.get_actual_position(ins).rename(ins)
+        # show(pos)
+        pl = system.accounts.portfolio()
