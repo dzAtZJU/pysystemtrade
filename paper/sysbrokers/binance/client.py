@@ -21,6 +21,7 @@ db = Arctic('localhost')
 Lib_Key = 'binance_v1'
 
 Root = '/Users/weiranzhou/Code/pysystemtrade/'
+Root = '/home/ec2-user/pysystemtrade/'
 Ins = 'BTC/USDT'
 Fre = '1h'
 Time = ":00"
@@ -92,35 +93,40 @@ def main():
 
     def log(txt):
         with open('job.txt', 'a') as f:
-            f.write(txt + '\n')
+            f.write('{} {}\n'.format(datetime.now().replace(microsecond=0), txt))
 
     def  job():
-        new_df = t.update_price(Ins)
-        if new_df.empty:
-            return
-        
-        curret_datetime = new_df.index[-1]
-        price = t.read_one_year(Ins, curret_datetime)
-        position = t.cal_position(price)
+        try:
+            new_df = t.update_price(Ins)
+            if new_df.empty:
+                log('[WARN] return since no new price data')
+                return
+            
+            curret_datetime = new_df.index[-1]
+            price = t.read_one_year(Ins, curret_datetime)
+            position = t.cal_position(price)
 
-        current_pos = float(client.futures_position_information(symbol=Ins.replace('/', ''))[0]['positionAmt'])
-        if current_pos != position.iloc[-2]:
-            log('current_pos != position.iloc[-2]')
+            current_pos = float(client.futures_position_information(symbol=Ins.replace('/', ''))[0]['positionAmt'])
+            if current_pos != position.iloc[-2]:
+                log('[WARN] current position != last optimal position')
 
-        optimal_pos = position.iloc[-1]
-        if current_pos == optimal_pos:
-            log('current_pos == optimal_pos')
-            return 
+            optimal_pos = position.iloc[-1]
+            if current_pos == optimal_pos:
+                log('current position {} is optimal'.format(current_pos))
+                return 
 
-        diff = optimal_pos - current_pos
-        abs_diff = round(abs(diff), 2)
-        log('{} {} {} {}'.format(datetime.now(), price[-1], position[-2], position[-1]))
-        order_info = None
-        if diff > 0:
-            order_info = client.futures_create_order(symbol='BTCUSDT', side='BUY', type='MARKET', quantity=abs_diff)
-        else:
-            order_info  = client.futures_create_order(symbol='BTCUSDT', side='SELL', type='MARKET', quantity=abs_diff)
-        log('{} {}'.format(datetime.now(), order_info))
+            diff = optimal_pos - current_pos
+            abs_diff = round(abs(diff), 2)
+            log('market price is {}, last optimal position is {}, optimal position is {}'.format(price[-1], position[-2], position[-1]))
+            order_info = None
+            if diff > 0:
+                order_info = client.futures_create_order(symbol='BTCUSDT', side='BUY', type='MARKET', quantity=abs_diff)
+            else:
+                order_info  = client.futures_create_order(symbol='BTCUSDT', side='SELL', type='MARKET', quantity=abs_diff)
+            log('orderId: {} {} {}'.format(order_info['orderId'], order_info['side'], order_info['origQty']))
+        except Exception as e:
+            log('[ERROR] {}'.format(e))
+    
 
     if Fre == '1m':
         schedule.every().minute.at(Time).do(job)
