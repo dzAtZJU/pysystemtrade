@@ -1,3 +1,4 @@
+import syscore.pandas.strategy_functions as  strategy_functions
 import pandas as pd
 import numpy as np
 import seaborn as sns

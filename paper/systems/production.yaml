@@ -1,7 +1,7 @@
 #YAML
 use_instrument_weight_estimates: False
 use_forecast_weight_estimates: False
-percentage_vol_target: 50
+percentage_vol_target: 50 # hold on to this !!!
 notional_trading_capital: 2000
 
 base_currency: "USDT"

@@ -55,7 +55,9 @@ def tmp(since:str, timeframe, symbol, exhcnage: Exchange, before=None):
         
         if len(dfs) % 20 == 0:
             time.sleep(1)
-        
+
+    if len(dfs) == 0:
+        return pd.DataFrame()
     rdf = pd.concat(dfs, axis=0)
     rdf = rdf[~rdf.index.duplicated()]
     new_rdf = rdf.copy().iloc[:-1]
@@ -152,27 +154,37 @@ if __name__ == '__main__':
 
 # df = get_forecast_and_future_corr(12,12)
 # df
+def get_ins_remote_name(ins):
+    coin, base, _ = ins.split('-')
+    return coin + base
 
-if __name__ == '__main__':
+def update(ins, fre, since='2020-01-01T00:00+08'):
     from syscore.fileutils import  resolve_path_and_filename_for_package
     import ccxt, os
 
-    exchange_name = 'Binance'
-    ins = 'BNB'
-    # exchange_name = 'OKX'
-    if exchange_name == 'Binance':
-        exchange = ccxt.binanceusdm()
-        symbol = '{}/USDT'.format(ins)
-    else:
-        exchange = ccxt.okex5()
-        symbol = '{}-USDT-SWAP'.format(ins)
-    timeframe = ('1h', 'Hour')
-    since = '2020-01-01T09:00+08'
-    # since = '2023-02-22T09:00+08'
-    history = tmp(since, timeframe[0], symbol, exchange)
+    exchange = ccxt.binanceusdm()
+    timeframe = {
+        '15m': ('15m', 'Minute15'),
+        '1h': ('1h', 'Hour')
+        }[fre]
     
-    if exchange_name == 'Binance':
-        symbol = symbol.replace('/', '-')
-        symbol += '-Binance'
-    history.to_csv(resolve_path_and_filename_for_package('{}.{}_{}.csv'.format('paper.sysinit.data.{}'.format(exchange_name), timeframe[1], symbol)))
+    file_path = resolve_path_and_filename_for_package('{}.{}_{}.csv'.format('paper.sysinit.data.Binance', timeframe[1], ins))
+    try:
+        old_data = pd.read_csv(file_path, index_col=0)
+    except Exception:
+        old_data = None
+
+    symbol = get_ins_remote_name(ins)
+    if old_data is  None:
+        history = tmp(since, timeframe[0], symbol, exchange)
+    elif pd.Timestamp(since) < pd.Timestamp(old_data.index[0] + '+08'):
+        history = tmp(since, timeframe[0], symbol, exchange)
+    else:
+        since = old_data.index[-1] + '+08'
+        history = tmp(since, timeframe[0], symbol, exchange)
+        history = pd.concat([old_data, history], axis=0)
+    history.to_csv(file_path)
     os.system('say "done, bitch"')
+
+if __name__ == '__main__':
+    update('BTC-BUSD-Binance', '1h')

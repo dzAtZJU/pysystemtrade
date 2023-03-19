@@ -22,7 +22,7 @@ Lib_Key = 'binance_v1'
 
 Root = '/Users/weiranzhou/Code/pysystemtrade/'
 Root = '/home/ec2-user/pysystemtrade/'
-Ins = 'BTC/USDT'
+Ins = 'BTC-BUSD-Binance'
 Fre = '1h'
 Time = ":00"
 Sleep = 60 #seconds
@@ -30,26 +30,29 @@ Capital = 1000
 Risk_target = 0.5
 Target_Abs_Forecast = 1
 
+def get_ins_remote_name(ins):
+    coin, base, _ = ins.split('-')
+    return coin + base
 class T:
+    @classmethod
+    def init_db(self):
+        db.initialize_library(Lib_Key, arctic.TICK_STORE)
+    
     @property
     def finance_library(self) -> TickStore:
         return db[Lib_Key]
 
-    def init_symbol(self, Ins):
-        self.finance_library.delete(Ins)
-        df =  pd.read_csv(Root  +  r'paper/sysinit/data/binance/Hour_BTC-USDT-Binance.csv')
+    def init_symbol(self, ins):
+        self.finance_library.delete(ins)
+        df =  pd.read_csv(Root  +  r'paper/sysinit/data/binance/Hour_{}.csv'.format(ins))
         df.index = pd.to_datetime(df['date']).dt.tz_localize('Asia/Hong_Kong')
         df = df.drop(columns=['date'])
-        self.finance_library.write(Ins, df)
-        print(self.finance_library.max_date(Ins))
+        self.finance_library.write(ins, df)
+        print(self.finance_library.max_date(ins))
 
-    def clear_symbol(self, Ins):
-        self.finance_library.delete(Ins)
+    def clear_symbol(self, ins):
+        self.finance_library.delete(ins)
 
-    @classmethod
-    def init_db(self):
-        db.initialize_library(Lib_Key, arctic.TICK_STORE)
-        
     def read_one_year(self, instrument_code, curret_datetime):
         return self.finance_library.read(instrument_code, date_range=DateRange(curret_datetime - pd.Timedelta(365, 'days'), curret_datetime), columns = ['FINAL']).iloc[: ,0]
     
@@ -57,7 +60,8 @@ class T:
         return self.finance_library.read(instrument_code, date_range=DateRange(None, curret_datetime), columns = ['FINAL']).iloc[: ,0]
     
     def update_price(self, instrument_code):
-        candles = binance.fetch_ohlcv(instrument_code, timeframe=Fre, limit=24 * 3)
+        remote_name = get_ins_remote_name(instrument_code)
+        candles = binance.fetch_ohlcv(remote_name, timeframe=Fre, limit=24 * 3)
         rdf = pd.DataFrame(candles, columns=['date', 'OPEN', 'HIGH', 'LOW', 'FINAL', 'VOLUME'])
         rdf.index = pd.to_datetime(rdf.iloc[:, 0], unit='ms', utc=True).dt.tz_convert('Asia/Hong_Kong')#.dt.tz_localize(None)
         rdf = rdf.drop(columns=['date'])
@@ -68,7 +72,7 @@ class T:
         max_date = self.finance_library.max_date(instrument_code)
         new_rdf = new_rdf[new_rdf.index > max_date]
         if not new_rdf.empty:
-            self.finance_library.write(Ins, new_rdf)
+            self.finance_library.write(instrument_code, new_rdf)
 
         return new_rdf
 
@@ -88,31 +92,32 @@ class T:
         return position
 
 
-def main():
+def main(ins):
     t = T()
 
     def log(txt):
-        with open('job.txt', 'a') as f:
+        with open('{}-job.txt'.format(ins), 'a') as f:
             f.write('{} {}\n'.format(datetime.now().replace(microsecond=0), txt))
 
     def  job():
         try:
-            new_df = t.update_price(Ins)
+            new_df = t.update_price(ins)
             if new_df.empty:
                 log('[WARN] return since no new price data')
                 return
             
             curret_datetime = new_df.index[-1]
-            price = t.read_one_year(Ins, curret_datetime)
+            price = t.read_one_year(ins, curret_datetime)
             position = t.cal_position(price)
 
-            current_pos = float(client.futures_position_information(symbol=Ins.replace('/', ''))[0]['positionAmt'])
+            remote_name = get_ins_remote_name(ins)
+            current_pos = float(client.futures_position_information(symbol=remote_name)[0]['positionAmt'])
             if current_pos != position.iloc[-2]:
                 log('[WARN] current position != last optimal position')
 
             optimal_pos = position.iloc[-1]
             if current_pos == optimal_pos:
-                log('current position {} is optimal'.format(current_pos))
+                log('market price is {}, current position {} is optimal'.format(price[-1], current_pos))
                 return 
 
             diff = optimal_pos - current_pos
@@ -120,13 +125,12 @@ def main():
             log('market price is {}, last optimal position is {}, optimal position is {}'.format(price[-1], position[-2], position[-1]))
             order_info = None
             if diff > 0:
-                order_info = client.futures_create_order(symbol='BTCUSDT', side='BUY', type='MARKET', quantity=abs_diff)
+                order_info = client.futures_create_order(symbol=remote_name, side='BUY', type='MARKET', quantity=abs_diff)
             else:
-                order_info  = client.futures_create_order(symbol='BTCUSDT', side='SELL', type='MARKET', quantity=abs_diff)
+                order_info  = client.futures_create_order(symbol=remote_name, side='SELL', type='MARKET', quantity=abs_diff)
             log('orderId: {} {} {}'.format(order_info['orderId'], order_info['side'], order_info['origQty']))
         except Exception as e:
             log('[ERROR] {}'.format(e))
-    
 
     if Fre == '1m':
         schedule.every().minute.at(Time).do(job)
@@ -143,9 +147,9 @@ def main():
 
 if __name__ == '__main__':
     # T.init_db()
-    # t = T()
-    # t.init_symbol(Ins)
+    t = T()
+    t.init_symbol(Ins)
     # t.update_price(Ins)
     # t.clear_symbol(Ins)
     # job()
-    main()
+    main(Ins)
