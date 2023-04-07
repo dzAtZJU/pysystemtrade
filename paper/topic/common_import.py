@@ -29,7 +29,7 @@ system = perpetuals_system(config='paper.systems.production.yaml')
 def get_client():
     config = Config('paper.systems.production.yaml')
     config.fill_with_defaults()
-    client = Client(config.get_element('binance_mock_apikey'), config.get_element('binance_mock_secretkey'), testnet=True)
+    client = Client(config.get_element('binance_report_apikey'), config.get_element('binance_report_secretkey'), testnet=False)
     return client
 # import nasdaqdatalink
 # from coinmarketcapapi import CoinMarketCapAPI
@@ -40,4 +40,5 @@ if __name__ == '__main__':
     for ins in system.portfolio.get_instrument_list():
         # pos = system.portfolio.get_actual_position(ins).rename(ins)
         # show(pos)
-        pl = system.accounts.portfolio()
+        pl = system.accounts.portfolio(roundpositions=False)
+        print(pl)

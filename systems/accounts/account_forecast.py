@@ -272,6 +272,7 @@ def pandl_for_instrument_forecast(
 
     account_curve = accountCurve(pandl_calculator)
 
+    # return account_curve
     return daily_returns_volatility, notional_position, account_curve
 
 

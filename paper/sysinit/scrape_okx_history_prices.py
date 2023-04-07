@@ -164,6 +164,8 @@ def update(ins, fre, since='2020-01-01T00:00+08'):
 
     exchange = ccxt.binanceusdm()
     timeframe = {
+        '1s': ('1s', 'Second1'),
+        '1m': ('1m', 'Minute1'),
         '15m': ('15m', 'Minute15'),
         '1h': ('1h', 'Hour')
         }[fre]
