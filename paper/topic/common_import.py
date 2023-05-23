@@ -3,18 +3,18 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 from paper.systems.crypto_system import perpetuals_system
-from itables import show
 from arctic import Arctic
 from itables import show
-import matplotlib.pyplot as plt
 from pprint import pprint
 from binance.client import Client
 from sysdata.config.configdata import Config
+import matplotlib.pyplot as plt
 plt.rcParams['axes.facecolor'] = 'black'
 plt.rcParams['figure.facecolor'] = 'black'
 plt.rcParams['xtick.color'] = 'white'
 plt.rcParams['ytick.color'] = 'white'
 plt.rcParams['text.color'] = 'white'
+Immerse_Size = (16, 8)
 
 store = Arctic('localhost')
 artic_lib = store['production.perpetual_prices_v3']

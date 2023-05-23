@@ -189,4 +189,5 @@ def update(ins, fre, since='2020-01-01T00:00+08'):
     os.system('say "done, bitch"')
 
 if __name__ == '__main__':
-    update('BTC-BUSD-Binance', '1h')
+    for ins in ['BTC', 'ETH', 'BNB', 'DOGE']:
+        update('{}-USDT-Binance'.format(ins), '1h')
