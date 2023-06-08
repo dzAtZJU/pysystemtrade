@@ -6,8 +6,8 @@ Get data from mongo and arctic used for futures trading
 from syscore.constants import arg_not_supplied
 
 from paper.sysdata.arctic.arctic_perpetual_prices import arcticPerpetualsPricesData
-from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
-from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
+# from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
+# from sysdata.mongodb.mongo_roll_data import mongoRollParametersData
 from sysdata.data_blob import dataBlob
 from paper.sysdata.sim.perpetuals_sim_data_with_data_blob import genericBlobUsingPerpetualsSimData
 
@@ -24,7 +24,7 @@ class dbPerpetualsSimData(genericBlobUsingPerpetualsSimData):
                 log=log,
                 class_list=[
                     arcticPerpetualsPricesData,
-                    mongoFuturesInstrumentData,
+                    # mongoFuturesInstrumentData,
                 ],
             )
 

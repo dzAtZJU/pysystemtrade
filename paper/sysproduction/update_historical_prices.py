@@ -10,7 +10,7 @@ from syscore.pandas.frequency import merge_data_with_different_freq
 
 from paper.sysdata.data_blob import dataBlob
 from sysdata.tools.manual_price_checker import manual_price_checker
-from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
+# from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
 
 from syslogdiag.email_via_db_interface import send_production_mail_msg
 
@@ -48,7 +48,14 @@ class updateHistoricalPrices(object):
 def update_historical_prices_with_data(data: dataBlob,
                                        interactive_mode: bool = False):
     cleaning_config = get_config_for_price_filtering(data)
-    list_of_codes_all = mongoFuturesInstrumentData(data.mongo_db).get_list_of_instruments()
+    # list_of_codes_all = mongoFuturesInstrumentData(data.mongo_db).get_list_of_instruments()
+    list_of_codes_all = [
+        'BTC-USDT-Binance',
+        'ETH-USDT-Binance',
+        'BNB-USDT-Binance',
+        'DOGE-USDT-Binance',
+        ]
+    
     for instrument_code in list_of_codes_all:
         if instrument_code == 'AAL' or instrument_code == 'UAL' or instrument_code == 'BNB-USDT':
             continue

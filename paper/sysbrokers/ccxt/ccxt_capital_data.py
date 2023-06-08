@@ -6,7 +6,6 @@ from syscore.constants import arg_not_supplied
 
 from sysobjects.spot_fx_prices import listOfCurrencyValues
 
-from syslogdiag.logger import logger
 from syslogdiag.log_to_screen import logtoscreen
 from sysdata.data_blob import dataBlob
 
@@ -14,7 +13,7 @@ from sysdata.data_blob import dataBlob
 
 class ccxtCapitalData(brokerCapitalData):
     def __init__(
-        self, ccxtconnection: connectionCCXT, log: logger = logtoscreen("ibCapitalData")
+        self, ccxtconnection: connectionCCXT, log: logtoscreen = logtoscreen("ibCapitalData")
     ):
         super().__init__(data=dataBlob(), log=log)
         self._ccxtconnection = ccxtconnection

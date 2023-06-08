@@ -204,7 +204,7 @@ class pst_logger(object):
         passed_attributes = kwargs
 
         use_attributes = get_update_attributes_list(log_attributes, passed_attributes)
-        self._check_attributes(use_attributes)
+        # self._check_attributes(use_attributes)
 
         same_msg_logged_recently = self._check_msg_logged_recently_or_update_hash(
             text=text, attributes=use_attributes, msglevel=msglevel

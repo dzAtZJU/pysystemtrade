@@ -17,7 +17,7 @@ from sysbrokers.IB.ib_contracts import (
     _add_legs_to_ib_contract,
 )
 
-from syslogdiag.logger import logger
+from syslogdiag.log_to_screen import logtoscreen as logger
 
 from sysobjects.contracts import futuresContract, contractDate
 from sysobjects.production.trading_hours.intersection_of_weekly_and_specific_trading_hours import \

@@ -3,7 +3,7 @@ from paper.topic.common_import import *
 from sysquant.estimators.vol import simple_ewvol_calc
 from scipy.stats import gmean
 
-def screen(look_back_days, vol_look_back_days, end=pd.Timestamp.now(), ins = 'Hour/BTC-BUSD-Binance'):
+def screen(look_back_days, vol_look_back_days, end=pd.Timestamp.now(), ins = 'Hour/BTC-USDT-Binance', figsize=Immerse_Size):
     start = end - np.timedelta64(look_back_days + vol_look_back_days , "D")
     period = (start, end)
     vol_look_back_hours = vol_look_back_days * 24
@@ -16,15 +16,15 @@ def screen(look_back_days, vol_look_back_days, end=pd.Timestamp.now(), ins = 'Ho
 
     '''Feature'''
     feature1 = close
-    fig = feature1.plot(legend=True, figsize=(16, 4))
+    fig = feature1.plot(legend=True, figsize=figsize)
     plt.title('{} {} - {}'.format(ins, close.index[0], close.index[-1]))
 
     if vol_look_back_hours > 0:
         feature2 = simple_ewvol_calc(close.pct_change(), days=vol_look_back_hours, min_periods=vol_look_back_hours).rename('vol') * np.sqrt(24) * np.sqrt(365)
-        feature2.plot(legend=True, figsize=(16, 4), secondary_y=True)
+        feature2.plot(legend=True, figsize=figsize, secondary_y=True)
     else:
         feature3 = volume
-        feature3.plot(legend=True, figsize=(16, 4), secondary_y=True, lw=0.5)
+        # feature3.plot(legend=True, figsize=figsize, secondary_y=True, lw=0.5)
     plt.show()
 
     plt.figure(figsize=(8,4))

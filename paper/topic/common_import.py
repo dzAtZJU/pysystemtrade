@@ -14,6 +14,7 @@ plt.rcParams['figure.facecolor'] = 'black'
 plt.rcParams['xtick.color'] = 'white'
 plt.rcParams['ytick.color'] = 'white'
 plt.rcParams['text.color'] = 'white'
+Vertical_Size = (16, 10)
 Immerse_Size = (16, 8)
 
 store = Arctic('localhost')

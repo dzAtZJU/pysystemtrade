@@ -12,7 +12,7 @@ from syscore.dateutils import (
     DAILY_PRICE_FREQ,
 )
 
-from syslogdiag.logger import logger
+from syslogdiag.log_to_screen import logtoscreen as logger
 from syslogdiag.log_to_screen import logtoscreen
 
 from sysobjects.contracts import futuresContract

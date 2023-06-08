@@ -3,9 +3,9 @@ from syscore.constants import arg_not_supplied
 from paper.sysdata.sim.db_perpetuals_sim_data import dbPerpetualsSimData
 from paper.sysdata.data_blob import dataBlob
 from paper.sysdata.arctic.arctic_perpetual_prices import arcticPerpetualsPricesData
-from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
+# from sysdata.mongodb.mongo_futures_instruments import mongoFuturesInstrumentData
 
-# from sysdata.sim.db_futures_sim_data import dbFuturesSimData
+from sysdata.sim.db_futures_sim_data import dbFuturesSimData
 # from sysdata.data_blob import dataBlob
 # from sysdata.arctic.arctic_adjusted_prices import arcticFuturesAdjustedPricesData
 # from sysdata.arctic.arctic_multiple_prices import arcticFuturesMultiplePricesData
@@ -23,7 +23,7 @@ def get_sim_data_object_for_production(data=arg_not_supplied) -> dbFuturesSimDat
     data.add_class_list(
         [
             arcticPerpetualsPricesData,
-            mongoFuturesInstrumentData,
+            # mongoFuturesInstrumentData,
             # arcticFuturesAdjustedPricesData,
             # arcticFuturesMultiplePricesData,
             # arcticFxPricesData,

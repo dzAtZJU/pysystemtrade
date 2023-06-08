@@ -6,8 +6,7 @@ from syscore.objects import get_class_name
 from syscore.text import camel_case_split
 from sysdata.config.production_config import get_production_config, Config
 from sysdata.mongodb.mongo_connection import mongoDb
-from sysdata.mongodb.mongo_log import logToMongod
-from syslogdiag.logger import logger
+from syslogdiag.log_to_screen import logtoscreen
 
 from sysdata.mongodb.mongo_IB_client_id import mongoIbBrokerClientIdData
 
@@ -20,7 +19,7 @@ class dataBlob(object):
         csv_data_paths: dict = arg_not_supplied,
         ib_conn: connectionCCXT = arg_not_supplied,
         mongo_db: mongoDb = arg_not_supplied,
-        log: logger = arg_not_supplied,
+        log: logtoscreen = arg_not_supplied,
         keep_original_prefix: bool = False,
     ):
         """
@@ -264,7 +263,7 @@ class dataBlob(object):
     def _add_attr_to_list(self, new_attr: str):
         self._attr_list.append(new_attr)
 
-    def update_log(self, new_log:logger):
+    def update_log(self, new_log:logtoscreen):
         self._log = new_log
 
     """
@@ -335,7 +334,7 @@ class dataBlob(object):
     def log(self):
         log = getattr(self, "_log", arg_not_supplied)
         if log is arg_not_supplied:
-            log = logToMongod(self.log_name, mongo_db=self.mongo_db, data=self)
+            log = logtoscreen(self.log_name, mongo_db=self.mongo_db, data=self)
             log.set_logging_level("on")
             self._log = log
 

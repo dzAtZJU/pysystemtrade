@@ -9,7 +9,6 @@ from sysbrokers.IB.ib_connection import connectionIB
 from paper.sysbrokers.ccxt.ccxt_connection import connectionCCXT
 
 from syscore.dateutils import strip_timezone_fromdatetime
-from syslogdiag.logger import logger
 from syslogdiag.log_to_screen import logtoscreen
 
 # IB state that pacing violations only occur for bar sizes of less than 1 minute
@@ -33,7 +32,7 @@ class ccxtClient(object):
     """
 
     def __init__(
-        self, ibconnection: connectionIB, log: logger = logtoscreen("ibClient")
+        self, ibconnection: connectionIB, log: logtoscreen = logtoscreen("ibClient")
     ):
 
         # means our first call won't be throttled for pacing
